@@ -15,38 +15,40 @@ public class Room : MonoBehaviour
     [SerializeField] Material startRoomMaterial;
 
     [Header("Room Environment")]
-    [SerializeField] GameObject northWall;
-    [SerializeField] GameObject eastWall;
-    [SerializeField] GameObject southWall;
-    [SerializeField] GameObject westWall;
-    [SerializeField] GameObject ground;
-    [SerializeField] int sideLength = 100;
+    [SerializeField] protected GameObject northWall;
+    [SerializeField] protected GameObject eastWall;
+    [SerializeField] protected GameObject southWall;
+    [SerializeField] protected GameObject westWall;
+    [SerializeField] protected GameObject ground;
+    [SerializeField] protected int sideLength = 100;
 
     [Header("Minimap Objects")]
-    [SerializeField] GameObject minimapGround;
+    [SerializeField] protected GameObject minimapGround;
 
-    PlayerController player;
+    protected PlayerController player;
 
-    Room originRoom;
+    protected Room originRoom;
 
-    DirectionsEnum directionOfOrigin;
-    RoomTypes roomType = RoomTypes.Fight;
+    protected DirectionsEnum directionOfOrigin;
+    protected RoomTypes roomType = RoomTypes.Fight;
 
-    int distanceFromStart;
-    int roomNum;
-    bool discovered;
-    bool roomCompleted;
-    bool doorsOpen;
-    bool isCurrentRoom;
+    protected int distanceFromStart;
+    protected int roomNum;
+    protected bool discovered;
+    protected bool roomCompleted;
+    protected bool doorsOpen;
+    protected bool isCurrentRoom;
 
-    private void Start()
+    protected virtual void Start()
     {
+        print("Base");
+
         player = FindObjectOfType<PlayerController>();
 
         minimapGround.SetActive(false);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (discovered)
         {

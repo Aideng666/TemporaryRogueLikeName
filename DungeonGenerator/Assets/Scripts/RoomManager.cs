@@ -49,11 +49,12 @@ public class RoomManager : MonoBehaviour
 
         minimapCam.transform.position = new Vector3(currentRoom.transform.position.x, minimapCam.transform.position.y, currentRoom.transform.position.z);
 
+        minimapCam.rotation = Quaternion.Euler(90, Camera.main.transform.rotation.eulerAngles.y, 0);
+
         DiscoverAdjacentRooms();
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (/*Input.GetKeyDown(KeyCode.Return)*/InputManager.Instance.controls.Player.CompleteRoomDevTool.triggered)
         {
-            print("HI");
             currentRoom.SetRoomCompleted(true);
         }
 

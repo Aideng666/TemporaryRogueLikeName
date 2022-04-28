@@ -23,10 +23,10 @@ public class Generator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Regenerate();
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    Regenerate();
+        //}
     }
 
     void InitDungeon()
