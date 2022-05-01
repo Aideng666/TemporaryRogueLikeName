@@ -24,7 +24,6 @@ public class AnimationManager : MonoBehaviour
     {
         switch (comboNum)
         {
-
             case 0:
 
                 anim.SetBool("Attack1", false);
@@ -57,6 +56,5 @@ public class AnimationManager : MonoBehaviour
 
                 break;
         }
-
     }
 }

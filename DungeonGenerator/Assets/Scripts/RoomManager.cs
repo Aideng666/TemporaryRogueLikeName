@@ -6,6 +6,7 @@ public class RoomManager : MonoBehaviour
 {
     [SerializeField] Transform minimapCam;
 
+
     List<Room> roomList = new List<Room>();
     PlayerController player;
 
@@ -27,14 +28,11 @@ public class RoomManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (roomList.Count < Generator.Instance.GetTotalRooms())
-        {
-            roomList = Generator.Instance.GetRooms();
-        }
+        roomList = Generator.Instance.GetRooms();
 
         foreach (Room room in roomList)
         {
-            if (Vector3.Distance(player.transform.position, room.transform.position) <= 50)
+            if (Vector3.Distance(player.transform.position, room.transform.position) <= room.GetSideLength() / 2)
             {
                 if (currentRoom != null)
                 {
@@ -53,7 +51,7 @@ public class RoomManager : MonoBehaviour
 
         DiscoverAdjacentRooms();
 
-        if (/*Input.GetKeyDown(KeyCode.Return)*/InputManager.Instance.controls.Player.CompleteRoomDevTool.triggered)
+        if (InputManager.Instance.CompleteRoom())
         {
             currentRoom.SetRoomCompleted(true);
         }
@@ -64,10 +62,11 @@ public class RoomManager : MonoBehaviour
     {
         for (int i = 0; i < roomList.Count; i++)
         {
-            if (!roomList[i].GetDiscovered() && (roomList[i].transform.position == currentRoom.transform.position + (Vector3.right * currentRoom.GetSideLength())
-                || roomList[i].transform.position == currentRoom.transform.position + (Vector3.left * currentRoom.GetSideLength())
-                || roomList[i].transform.position == currentRoom.transform.position + (Vector3.back * currentRoom.GetSideLength())
-                || roomList[i].transform.position == currentRoom.transform.position + (Vector3.forward * currentRoom.GetSideLength())))
+            if (!roomList[i].GetDiscovered() 
+                && (roomList[i].transform.position == currentRoom.transform.position + (Vector3.right * ((roomList[i].GetSideLength() / 2) + (currentRoom.GetSideLength() / 2)))
+                || roomList[i].transform.position == currentRoom.transform.position + (Vector3.left * ((roomList[i].GetSideLength() / 2) + (currentRoom.GetSideLength() / 2)))
+                || roomList[i].transform.position == currentRoom.transform.position + (Vector3.back * ((roomList[i].GetSideLength() / 2) + (currentRoom.GetSideLength() / 2)))
+                || roomList[i].transform.position == currentRoom.transform.position + (Vector3.forward * ((roomList[i].GetSideLength() / 2) + (currentRoom.GetSideLength() / 2)))))
             {
                 roomList[i].SetDiscovered(true);
             }

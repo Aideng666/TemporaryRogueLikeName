@@ -5,14 +5,14 @@ using UnityEngine;
 public class Room : MonoBehaviour
 {
     [Header("Prefabs")]
-    [SerializeField] GameObject northSouthSolidWallPrefab;
-    [SerializeField] GameObject eastWestSolidWallPrefab;
-    [SerializeField] GameObject northSouthDoorWallPrefab;
-    [SerializeField] GameObject eastWestDoorWallPrefab;
+    [SerializeField] protected GameObject northSouthSolidWallPrefab;
+    [SerializeField] protected GameObject eastWestSolidWallPrefab;
+    [SerializeField] protected GameObject northSouthDoorWallPrefab;
+    [SerializeField] protected GameObject eastWestDoorWallPrefab;
 
     [Header("Materials")]
-    [SerializeField] Material endRoomMaterial;
-    [SerializeField] Material startRoomMaterial;
+    [SerializeField] protected Material endRoomMaterial;
+    [SerializeField] protected Material startRoomMaterial;
 
     [Header("Room Environment")]
     [SerializeField] protected GameObject northWall;
@@ -41,8 +41,6 @@ public class Room : MonoBehaviour
 
     protected virtual void Start()
     {
-        print("Base");
-
         player = FindObjectOfType<PlayerController>();
 
         minimapGround.SetActive(false);
@@ -62,7 +60,7 @@ public class Room : MonoBehaviour
                 CloseDoors();
 
 
-                if (Vector3.Distance(player.transform.position, transform.position) <= 50)
+                if (Vector3.Distance(player.transform.position, transform.position) <= sideLength / 2)
                 {
                     discovered = true;
                 }
@@ -172,6 +170,33 @@ public class Room : MonoBehaviour
         ground.GetComponent<MeshRenderer>().material = endRoomMaterial;
 
         minimapGround.GetComponent<MeshRenderer>().material = endRoomMaterial;
+
+        switch (directionOfOrigin)
+        {
+            case DirectionsEnum.North:
+
+                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.back * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.South);
+
+                break;
+
+            case DirectionsEnum.East:
+
+                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.left * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.West);
+
+                break;
+
+            case DirectionsEnum.South:
+
+                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.forward * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.North);
+
+                break;
+
+            case DirectionsEnum.West:
+
+                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.right * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.East);
+
+                break;
+        }
     }
 
     public GameObject ChangeWall(DirectionsEnum direction, WallTypes type)
@@ -184,11 +209,11 @@ public class Room : MonoBehaviour
 
                 if (type == WallTypes.Solid)
                 {
-                    northWall = Instantiate(northSouthSolidWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, 50), Quaternion.identity, transform);
+                    northWall = Instantiate(northSouthSolidWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, sideLength / 2), Quaternion.identity, transform);
                 }
                 else
                 {
-                    northWall = Instantiate(northSouthDoorWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, 50), Quaternion.identity, transform);
+                    northWall = Instantiate(northSouthDoorWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, sideLength / 2), Quaternion.identity, transform);
                 }
 
                 return northWall;
@@ -199,11 +224,11 @@ public class Room : MonoBehaviour
 
                 if (type == WallTypes.Solid)
                 {
-                    eastWall = Instantiate(eastWestSolidWallPrefab, transform.position + new Vector3(50, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
+                    eastWall = Instantiate(eastWestSolidWallPrefab, transform.position + new Vector3(sideLength / 2, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
                 }
                 else
                 {
-                    eastWall = Instantiate(eastWestDoorWallPrefab, transform.position + new Vector3(50, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
+                    eastWall = Instantiate(eastWestDoorWallPrefab, transform.position + new Vector3(sideLength / 2, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
                 }
 
                 return eastWall;
@@ -214,11 +239,11 @@ public class Room : MonoBehaviour
 
                 if (type == WallTypes.Solid)
                 {
-                    southWall = Instantiate(northSouthSolidWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, -50), Quaternion.identity, transform);
+                    southWall = Instantiate(northSouthSolidWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, -sideLength / 2), Quaternion.identity, transform);
                 }
                 else
                 {
-                    southWall = Instantiate(northSouthDoorWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, -50), Quaternion.identity, transform);
+                    southWall = Instantiate(northSouthDoorWallPrefab, transform.position + new Vector3(0, northSouthSolidWallPrefab.transform.position.y, -sideLength / 2), Quaternion.identity, transform);
                 }
 
                 return southWall;
@@ -229,11 +254,11 @@ public class Room : MonoBehaviour
 
                 if (type == WallTypes.Solid)
                 {
-                    westWall = Instantiate(eastWestSolidWallPrefab, transform.position + new Vector3(-50, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
+                    westWall = Instantiate(eastWestSolidWallPrefab, transform.position + new Vector3(-sideLength / 2, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
                 }
                 else
                 {
-                    westWall = Instantiate(eastWestDoorWallPrefab, transform.position + new Vector3(-50, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
+                    westWall = Instantiate(eastWestDoorWallPrefab, transform.position + new Vector3(-sideLength / 2, northSouthSolidWallPrefab.transform.position.y, 0), Quaternion.Euler(0, 90, 0), transform);
                 }
 
                 return westWall;

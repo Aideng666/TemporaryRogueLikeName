@@ -25,8 +25,10 @@ public class PlayerController : MonoBehaviour
     //Attack Variables
     int numberOfClicks = 0;
     float lastClickTime = 0;
-    float nextClickTimeLimit = 1;
+    float nextClickTimeLimit = 1f;
+    [SerializeField] float lightAttackCooldown;
     bool isAttacking;
+    bool canAttack = true;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +40,6 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        //InputManager.Instance.controls.Player.Dash.performed += Dash;
     }
 
     // Update is called once per frame
@@ -47,14 +47,11 @@ public class PlayerController : MonoBehaviour
     {
         if (!isDashing)
         {
-            if (!isAttacking)
-            {
-                Move();
-            }
-
+            Move();
+           
             Attack();
 
-            if (/*(Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.Space))*/InputManager.Instance.Dash() && CanDash())
+            if (InputManager.Instance.Dash() && CanDash())
             {
                 StartCoroutine(Dash());
             }
@@ -63,34 +60,32 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        //float horizontalInput = Input.GetAxisRaw("Horizontal");
-        //float verticalInput = Input.GetAxisRaw("Vertical");
-
-        //Vector3 direction = new Vector3(horizontalInput, 0f, verticalInput).normalized;
-        Vector2 direction = InputManager.Instance.Move();
-
-
-        float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
-        moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-        if (direction.magnitude > 0)
+        if (!isAttacking)
         {
-            transform.rotation = Quaternion.Euler(0, targetAngle, 0);
+            Vector2 direction = InputManager.Instance.Move();
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
+            moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+            if (direction.magnitude > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, targetAngle, 0);
+            }
+
+            if (moveDir != Vector3.zero)
+            {
+                dashDirection = moveDir;
+            }
+
+            if (direction.magnitude <= 0.1f)
+            {
+                moveDir = new Vector3(0, 0, 0);
+            }
+
+            controller.Move(moveDir * speed * Time.deltaTime);
         }
 
         camLookAt.rotation = cam.rotation;
-
-        if (moveDir != Vector3.zero)
-        {
-            dashDirection = moveDir;
-        }
-
-        if (direction.magnitude <= 0.1f)
-        {
-            moveDir = new Vector3(0, 0, 0);
-        }
-
-        controller.Move(moveDir * speed * Time.deltaTime);
     }
 
     IEnumerator Dash()
@@ -163,25 +158,61 @@ public class PlayerController : MonoBehaviour
             AnimationManager.Instance.PlayerAttackCombo(GetComponent<Animator>(), 0);
         }
 
+        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("2nd Attack"))
+        {
+            print(GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime);
+        }
+
+        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 0.4f 
+            && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime < 0.9f
+            && !GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            isAttacking = true;
+        }
+
+        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.4f 
+            || GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f
+            && !GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            isAttacking = false;
+        }
+
         if (!isDashing)
         {
-            if (/*Input.GetMouseButtonDown(0)*/InputManager.Instance.LightAttack())
+            if (InputManager.Instance.LightAttack() && canAttack)
             {
-                isAttacking = true;
-
                 numberOfClicks++;
 
-                AnimationManager.Instance.PlayerAttackCombo(GetComponent<Animator>(), numberOfClicks);
+                if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("1st Attack") && numberOfClicks > 2)
+                {
+                    numberOfClicks = 2;
+                }
 
                 if (numberOfClicks > 3)
                 {
-                    numberOfClicks = 0;
+                    numberOfClicks = 3;
+                }
 
-                    AnimationManager.Instance.PlayerAttackCombo(GetComponent<Animator>(), 0);
+                AnimationManager.Instance.PlayerAttackCombo(GetComponent<Animator>(), numberOfClicks);
+
+                if (numberOfClicks == 3 && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack") && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f)
+                {
+                    StartCoroutine(LightAttackCooldown());
+
+                    numberOfClicks = 0;
                 }
 
                 lastClickTime = Time.time;
             }
         }
+    }
+
+    IEnumerator LightAttackCooldown()
+    {
+        canAttack = false;
+
+        yield return new WaitForSeconds(lightAttackCooldown);
+
+        canAttack = true;
     }
 }

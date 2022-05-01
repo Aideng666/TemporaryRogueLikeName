@@ -5,6 +5,7 @@ public class Generator : MonoBehaviour
 {
     [SerializeField] int totalRooms = 15;
     [SerializeField] GameObject roomPrefab;
+    [SerializeField] GameObject largeRoomPrefab;
 
     List<Room> rooms = new List<Room>();
 
@@ -78,6 +79,30 @@ public class Generator : MonoBehaviour
             room.GetComponent<Room>().RemoveWall(directionOfOrigin);
             room.GetComponent<Room>().SetWall(directionOfOrigin, newWall);
         }
+    }
+
+    public void SpawnBossRoom(Vector3 position, Room origin, Room roomToReplace, DirectionsEnum directionOfOrigin, DirectionsEnum directionFromOrigin)
+    {
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            if (rooms[i].transform.position == roomToReplace.transform.position)
+            {
+                rooms.RemoveAt(i);
+            }
+        }
+
+        Destroy(roomToReplace.gameObject);
+
+        var room = Instantiate(largeRoomPrefab, position, Quaternion.identity);
+
+        room.GetComponent<LargeRoom>().SetOrigin(origin, directionOfOrigin);
+
+        rooms.Add(room.GetComponent<LargeRoom>());
+
+        GameObject newWall = room.GetComponent<LargeRoom>().ChangeWall(directionOfOrigin, WallTypes.Door);
+
+        origin.RemoveWall(directionFromOrigin);
+        origin.SetWall(directionFromOrigin, newWall);
     }
 
     void ChooseNewRoomLocation()

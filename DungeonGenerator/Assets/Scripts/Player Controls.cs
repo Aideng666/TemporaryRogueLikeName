@@ -46,7 +46,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Light Attack"",
+                    ""name"": ""LightAttack"",
                     ""type"": ""Button"",
                     ""id"": ""300a9166-5e23-4048-a4ff-ccacf431ea90"",
                     ""expectedControlType"": ""Button"",
@@ -55,7 +55,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Complete Room (Dev Tool)"",
+                    ""name"": ""CompleteRoom"",
                     ""type"": ""Button"",
                     ""id"": ""63f0ac2a-8b15-48a4-8ee9-99e0d0c39049"",
                     ""expectedControlType"": ""Button"",
@@ -169,7 +169,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Light Attack"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -180,7 +180,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Light Attack"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -191,7 +191,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Complete Room (Dev Tool)"",
+                    ""action"": ""CompleteRoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -211,7 +211,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""id"": ""4a4a3cf2-38d3-4b3d-81cb-06c8ea8b2403"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""ScaleVector2(x=2)"",
                     ""groups"": """",
                     ""action"": ""Camera Movement"",
                     ""isComposite"": false,
@@ -226,8 +226,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player ", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
-        m_Player_LightAttack = m_Player.FindAction("Light Attack", throwIfNotFound: true);
-        m_Player_CompleteRoomDevTool = m_Player.FindAction("Complete Room (Dev Tool)", throwIfNotFound: true);
+        m_Player_LightAttack = m_Player.FindAction("LightAttack", throwIfNotFound: true);
+        m_Player_CompleteRoom = m_Player.FindAction("CompleteRoom", throwIfNotFound: true);
         m_Player_CameraMovement = m_Player.FindAction("Camera Movement", throwIfNotFound: true);
     }
 
@@ -291,7 +291,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_LightAttack;
-    private readonly InputAction m_Player_CompleteRoomDevTool;
+    private readonly InputAction m_Player_CompleteRoom;
     private readonly InputAction m_Player_CameraMovement;
     public struct PlayerActions
     {
@@ -300,7 +300,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @LightAttack => m_Wrapper.m_Player_LightAttack;
-        public InputAction @CompleteRoomDevTool => m_Wrapper.m_Player_CompleteRoomDevTool;
+        public InputAction @CompleteRoom => m_Wrapper.m_Player_CompleteRoom;
         public InputAction @CameraMovement => m_Wrapper.m_Player_CameraMovement;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -320,9 +320,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @LightAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
                 @LightAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
                 @LightAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
-                @CompleteRoomDevTool.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCompleteRoomDevTool;
-                @CompleteRoomDevTool.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCompleteRoomDevTool;
-                @CompleteRoomDevTool.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCompleteRoomDevTool;
+                @CompleteRoom.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCompleteRoom;
+                @CompleteRoom.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCompleteRoom;
+                @CompleteRoom.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCompleteRoom;
                 @CameraMovement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMovement;
                 @CameraMovement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMovement;
                 @CameraMovement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMovement;
@@ -339,9 +339,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @LightAttack.started += instance.OnLightAttack;
                 @LightAttack.performed += instance.OnLightAttack;
                 @LightAttack.canceled += instance.OnLightAttack;
-                @CompleteRoomDevTool.started += instance.OnCompleteRoomDevTool;
-                @CompleteRoomDevTool.performed += instance.OnCompleteRoomDevTool;
-                @CompleteRoomDevTool.canceled += instance.OnCompleteRoomDevTool;
+                @CompleteRoom.started += instance.OnCompleteRoom;
+                @CompleteRoom.performed += instance.OnCompleteRoom;
+                @CompleteRoom.canceled += instance.OnCompleteRoom;
                 @CameraMovement.started += instance.OnCameraMovement;
                 @CameraMovement.performed += instance.OnCameraMovement;
                 @CameraMovement.canceled += instance.OnCameraMovement;
@@ -354,7 +354,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnLightAttack(InputAction.CallbackContext context);
-        void OnCompleteRoomDevTool(InputAction.CallbackContext context);
+        void OnCompleteRoom(InputAction.CallbackContext context);
         void OnCameraMovement(InputAction.CallbackContext context);
     }
 }
