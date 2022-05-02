@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform cam;
     [SerializeField] Transform camLookAt;
     [SerializeField] Transform bodyToRotate;
+    [SerializeField] Transform attackPoint;
+    [SerializeField] LayerMask enemyLayer;
 
     //Character Controller
     CharacterController controller;
@@ -35,7 +37,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float lightAttackCooldown;
     [SerializeField] float heavyAttackCooldown;
     bool isAttacking;
+    bool activateCollider;
     bool canAttack = true;
+    PlayerAttackStates attackState = PlayerAttackStates.Idle;
+    PlayerAttackStates previousAttackState = PlayerAttackStates.Idle;
+
 
     //health
     [SerializeField] int maxhealth = 6;
@@ -66,6 +72,29 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            attackState = PlayerAttackStates.Idle;
+        }
+        else if(GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("1st Attack"))
+        {
+            attackState = PlayerAttackStates.Light1;
+        }
+        else if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("2nd Attack"))
+        {
+            attackState = PlayerAttackStates.Light2;
+        }
+        else if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack"))
+        {
+            attackState = PlayerAttackStates.Light3;
+        }
+
+        if (attackState != previousAttackState)
+        {
+            activateCollider = true;
+            isAttacking = false;
+        }
+
         if (!isDashing)
         {
             if (!knockbackApplied)
@@ -80,11 +109,13 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        previousAttackState = attackState;
     }
 
     void Move()
     {
-        if (!isAttacking)
+        if (!isAttacking || GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack"))
         {
             Vector2 direction = InputManager.Instance.Move();
 
@@ -180,6 +211,11 @@ public class PlayerController : MonoBehaviour
 
     void Attack()
     {
+        if (Time.time <= lastClickTime + 0.3f)
+        {
+            return;
+        }
+
         if (Time.time > lastClickTime + nextClickTimeLimit)
         {
             numberOfClicks = 0;
@@ -191,14 +227,14 @@ public class PlayerController : MonoBehaviour
 
         if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 0.4f 
             && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime < 0.9f
-            && !GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            && attackState != PlayerAttackStates.Idle)
         {
             isAttacking = true;
         }
 
-        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.4f 
-            || GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f
-            && !GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if ((GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.4f 
+            || GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+            && attackState != PlayerAttackStates.Idle)
         {
             isAttacking = false;
         }
@@ -209,7 +245,12 @@ public class PlayerController : MonoBehaviour
             {
                 numberOfClicks++;
 
-                if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("1st Attack") && numberOfClicks > 2)
+                if(attackState == PlayerAttackStates.Idle && numberOfClicks > 1)
+                {
+                    numberOfClicks = 1;
+                }
+
+                if (attackState == PlayerAttackStates.Light1 && numberOfClicks > 2)
                 {
                     numberOfClicks = 2;
                 }
@@ -221,15 +262,82 @@ public class PlayerController : MonoBehaviour
 
                 AnimationManager.Instance.PlayerAttackCombo(GetComponent<Animator>(), numberOfClicks);
 
-                if (numberOfClicks == 3 && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack") && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f)
+                if (numberOfClicks == 3 && attackState == PlayerAttackStates.Light3 && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f)
                 {
-                    StartCoroutine(LightAttackCooldown());
-
                     numberOfClicks = 0;
+
+                    AnimationManager.Instance.PlayerAttackCombo(GetComponent<Animator>(), 0);
+
+                    StartCoroutine(LightAttackCooldown());
                 }
 
                 lastClickTime = Time.time;
             }
+        }
+
+        if (isAttacking && activateCollider)
+        {
+            Collider[] enemiesHit;
+
+            switch (attackState)
+            {
+                case PlayerAttackStates.Light1:
+
+                    enemiesHit = Physics.OverlapBox(attackPoint.position, new Vector3(5, 0.5f, 5), Quaternion.identity, enemyLayer);
+
+                    foreach (Collider enemy in enemiesHit)
+                    {
+                        enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(35, (attackPoint.position - transform.position).normalized);
+
+                        enemy.GetComponent<Enemy>().TakeDamage(lightAttackComboDamage[0]);
+                    }
+
+                    break;
+
+                case PlayerAttackStates.Light2:
+
+                    enemiesHit = Physics.OverlapBox(attackPoint.position, new Vector3(5, 0.5f, 5), Quaternion.identity, enemyLayer);
+
+                    foreach (Collider enemy in enemiesHit)
+                    {
+                        enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(35, (attackPoint.position - transform.position).normalized);
+
+                        enemy.GetComponent<Enemy>().TakeDamage(lightAttackComboDamage[1]);
+                    }
+
+                    break;
+
+                case PlayerAttackStates.Light3:
+
+                    enemiesHit = Physics.OverlapBox(transform.position, new Vector3(5, 0.5f, 5), Quaternion.identity, enemyLayer);
+
+                    foreach (Collider enemy in enemiesHit)
+                    {
+                        enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(20, (attackPoint.position - transform.position).normalized);
+
+                        enemy.GetComponent<Enemy>().TakeDamage(lightAttackComboDamage[2]);
+                    }
+
+                    StartCoroutine(ActivateSecondSpinAttack());
+
+                    break;
+            }
+
+            activateCollider = false;
+        }
+    }
+
+    IEnumerator ActivateSecondSpinAttack()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        Collider[] enemiesHit = Physics.OverlapBox(transform.position, new Vector3(4, 0.5f, 4), Quaternion.identity, enemyLayer);
+
+        foreach (Collider enemy in enemiesHit)
+        {
+            enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(40, (attackPoint.position - transform.position).normalized);
+
+            enemy.GetComponent<Enemy>().TakeDamage(lightAttackComboDamage[2]);
         }
     }
 
@@ -333,5 +441,12 @@ public class PlayerController : MonoBehaviour
     public float[] GetLightAttackDamages()
     {
         return lightAttackComboDamage;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireCube(attackPoint.position, new Vector3(10, 1, 10));
+        Gizmos.DrawWireCube(transform.position, new Vector3(10, 1, 10));
+
     }
 }

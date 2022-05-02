@@ -48,7 +48,14 @@ public class Generator : MonoBehaviour
             }
         }
 
+        //currentEndRoom.SetRoomType(RoomTypes.Boss);
         currentEndRoom.SetEndRoom();
+
+        CreateShopRoom();
+
+        CreateItemRoom();
+
+        CreateFightRooms();
     }
 
     void Regenerate()
@@ -83,6 +90,8 @@ public class Generator : MonoBehaviour
 
     public void SpawnBossRoom(Vector3 position, Room origin, Room roomToReplace, DirectionsEnum directionOfOrigin, DirectionsEnum directionFromOrigin)
     {
+        print("Spawning Boss Room");
+
         for (int i = 0; i < rooms.Count; i++)
         {
             if (rooms[i].transform.position == roomToReplace.transform.position)
@@ -103,6 +112,51 @@ public class Generator : MonoBehaviour
 
         origin.RemoveWall(directionFromOrigin);
         origin.SetWall(directionFromOrigin, newWall);
+    }
+
+    void CreateShopRoom()
+    {
+        List<Room> changeableRooms = new List<Room>();
+
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            if (rooms[i].GetComponentsInChildren<Animator>().Length < 2 && rooms[i].GetRoomType() == RoomTypes.Default)
+            {
+                changeableRooms.Add(rooms[i]);
+            }
+        }
+
+        int randomIndex = Random.Range(0, changeableRooms.Count);
+
+        changeableRooms[randomIndex].SetRoomType(RoomTypes.Shop);
+    }
+
+    void CreateItemRoom()
+    {
+        List<Room> changeableRooms = new List<Room>();
+
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            if (rooms[i].GetComponentsInChildren<Animator>().Length < 2 && rooms[i].GetRoomType() == RoomTypes.Default)
+            {
+                changeableRooms.Add(rooms[i]);
+            }
+        }
+
+        int randomIndex = Random.Range(0, changeableRooms.Count);
+
+        changeableRooms[randomIndex].SetRoomType(RoomTypes.Item);
+    }
+
+    void CreateFightRooms()
+    {
+        foreach(Room room in rooms)
+        {
+            if (room.GetRoomType() == RoomTypes.Default)
+            {
+                room.SetRoomType(RoomTypes.Fight);
+            }
+        }
     }
 
     void ChooseNewRoomLocation()

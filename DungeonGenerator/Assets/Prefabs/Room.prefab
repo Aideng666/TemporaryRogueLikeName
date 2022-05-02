@@ -376,8 +376,11 @@ MonoBehaviour:
   eastWestSolidWallPrefab: {fileID: 7349289175672572630, guid: 380815e3642e0a24daf74f179247f5da, type: 3}
   northSouthDoorWallPrefab: {fileID: 1887460381894158362, guid: a43e59b416935a24a9d7d9145c5bf641, type: 3}
   eastWestDoorWallPrefab: {fileID: 8791272499271406308, guid: d8fc7e4b6fe380f4cbee561c57f24fdf, type: 3}
+  enemyPrefab: {fileID: 2053013898993874319, guid: e12e07ae288f47d4ab10bf476ab344ee, type: 3}
   endRoomMaterial: {fileID: 2100000, guid: 87a0abcb523786545af3890275dc03b6, type: 2}
   startRoomMaterial: {fileID: 2100000, guid: 05115318c90b51343880d7b15eadcdca, type: 2}
+  shopRoomMaterial: {fileID: 2100000, guid: cb4e8b59d74650f4f84940caa4ed5978, type: 2}
+  itemRoomMaterial: {fileID: 2100000, guid: 6b9a5435cb1c7134391719f69514a49c, type: 2}
   northWall: {fileID: 4390020140714480565}
   eastWall: {fileID: 7707160240547107317}
   southWall: {fileID: 5778543600750095025}

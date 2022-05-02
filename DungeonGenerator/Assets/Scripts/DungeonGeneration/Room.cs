@@ -9,10 +9,13 @@ public class Room : MonoBehaviour
     [SerializeField] protected GameObject eastWestSolidWallPrefab;
     [SerializeField] protected GameObject northSouthDoorWallPrefab;
     [SerializeField] protected GameObject eastWestDoorWallPrefab;
+    [SerializeField] protected GameObject enemyPrefab;
 
     [Header("Materials")]
     [SerializeField] protected Material endRoomMaterial;
     [SerializeField] protected Material startRoomMaterial;
+    [SerializeField] protected Material shopRoomMaterial;
+    [SerializeField] protected Material itemRoomMaterial;
 
     [Header("Room Environment")]
     [SerializeField] protected GameObject northWall;
@@ -30,7 +33,7 @@ public class Room : MonoBehaviour
     protected Room originRoom;
 
     protected DirectionsEnum directionOfOrigin;
-    protected RoomTypes roomType = RoomTypes.Fight;
+    protected RoomTypes roomType = RoomTypes.Default;
 
     protected int distanceFromStart;
     protected int roomNum;
@@ -122,6 +125,11 @@ public class Room : MonoBehaviour
         return sideLength;
     }
 
+    public RoomTypes GetRoomType()
+    {
+        return roomType;
+    }
+
     public void SetDiscovered(bool disc)
     {
         discovered = disc;
@@ -130,7 +138,129 @@ public class Room : MonoBehaviour
     public void SetRoomType(RoomTypes type)
     {
         roomType = type;
+
+        switch (type)
+        {
+            case RoomTypes.Start:
+
+                distanceFromStart = 0;
+
+                roomCompleted = true;
+
+                ground.GetComponent<MeshRenderer>().material = startRoomMaterial;
+
+                minimapGround.GetComponent<MeshRenderer>().material = startRoomMaterial;
+
+                break;
+
+            case RoomTypes.Boss:
+
+                break;
+
+            case RoomTypes.Shop:
+
+                roomCompleted = true;
+
+                ground.GetComponent<MeshRenderer>().material = shopRoomMaterial;
+
+                minimapGround.GetComponent<MeshRenderer>().material = shopRoomMaterial;
+
+                break;
+
+            case RoomTypes.Item:
+
+                roomCompleted = true;
+
+                ground.GetComponent<MeshRenderer>().material = itemRoomMaterial;
+
+                minimapGround.GetComponent<MeshRenderer>().material = itemRoomMaterial;
+
+                break;
+
+            case RoomTypes.Fight:
+
+                var enemy = Instantiate(enemyPrefab, new Vector3(transform.position.x, enemyPrefab.transform.position.y, transform.position.z), Quaternion.identity);
+
+                enemy.GetComponent<Enemy>().SetRoom(this);
+
+                break;
+        }
     }
+
+    //public void SetRoomType(RoomTypes type)
+    //{
+    //    roomType = type;
+
+    //    switch (type)
+    //    {
+    //        case RoomTypes.Start:
+
+    //            distanceFromStart = 0;
+
+    //            roomCompleted = true;
+
+    //            ground.GetComponent<MeshRenderer>().material = startRoomMaterial;
+
+    //            minimapGround.GetComponent<MeshRenderer>().material = startRoomMaterial;
+
+    //            break;
+
+    //        case RoomTypes.Boss:
+
+    //            ground.GetComponent<MeshRenderer>().material = endRoomMaterial;
+
+    //            minimapGround.GetComponent<MeshRenderer>().material = endRoomMaterial;
+
+    //            switch (directionOfOrigin)
+    //            {
+    //                case DirectionsEnum.North:
+
+    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.back * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.South);
+
+    //                    break;
+
+    //                case DirectionsEnum.East:
+
+    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.left * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.West);
+
+    //                    break;
+
+    //                case DirectionsEnum.South:
+
+    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.forward * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.North);
+
+    //                    break;
+
+    //                case DirectionsEnum.West:
+
+    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.right * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.East);
+
+    //                    break;
+    //            }
+
+    //            break;
+
+    //        case RoomTypes.Shop:
+
+    //            roomCompleted = true;
+
+    //            ground.GetComponent<MeshRenderer>().material = shopRoomMaterial;
+
+    //            minimapGround.GetComponent<MeshRenderer>().material = shopRoomMaterial;
+
+    //            break;
+
+    //        case RoomTypes.Item:
+
+    //            roomCompleted = true;
+
+    //            ground.GetComponent<MeshRenderer>().material = itemRoomMaterial;
+
+    //            minimapGround.GetComponent<MeshRenderer>().material = itemRoomMaterial;
+
+    //            break;
+    //    }
+    //}
 
     public void SetOrigin(Room origin, DirectionsEnum direction)
     {
@@ -146,15 +276,7 @@ public class Room : MonoBehaviour
         }
         else
         {
-            distanceFromStart = 0;
-
             SetRoomType(RoomTypes.Start);
-
-            roomCompleted = true;
-
-            ground.GetComponent<MeshRenderer>().material = startRoomMaterial;
-
-            minimapGround.GetComponent<MeshRenderer>().material = startRoomMaterial;
         }
     }
 

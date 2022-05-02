@@ -4,8 +4,10 @@ using UnityEngine;
 
 public enum RoomTypes
 {
+    Default,
     Start,
     Fight,
     Boss,
-    Shop
+    Shop,
+    Item
 }

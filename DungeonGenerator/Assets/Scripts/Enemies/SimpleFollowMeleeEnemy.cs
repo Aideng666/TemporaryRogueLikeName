@@ -9,6 +9,8 @@ public class SimpleFollowMeleeEnemy : Enemy
     protected override void Start()
     {
         base.Start();
+
+        type = EnemyTypes.SimpleFollow;
     }
 
     protected override void Update()
@@ -17,7 +19,7 @@ public class SimpleFollowMeleeEnemy : Enemy
 
         transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
 
-        if (!knockbackApplied && canMove)
+        if (!knockbackApplied && canMove && room.GetIsCurrentRoom())
         {
             FollowPlayer();
         }
