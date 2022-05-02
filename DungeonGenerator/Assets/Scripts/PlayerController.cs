@@ -8,17 +8,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform cam;
     [SerializeField] Transform camLookAt;
     [SerializeField] Transform bodyToRotate;
-    [SerializeField] float speed;
-    [SerializeField] float dashTimespan;
-    [SerializeField] float dashCooldown = 2;
 
     //Character Controller
     CharacterController controller;
 
+    //For Knockback
+    Rigidbody body;
+
     //Movement Variables
+    [SerializeField] float speed;
+    [SerializeField] float dashTimespan;
+    [SerializeField] float dashCooldown = 2;
     TrailRenderer dashTrail;
     float timeToNextDash = 0;
     bool isDashing;
+    bool knockbackApplied;
     Vector3 dashDirection;
     Vector3 moveDir;
 
@@ -26,10 +30,25 @@ public class PlayerController : MonoBehaviour
     int numberOfClicks = 0;
     float lastClickTime = 0;
     float nextClickTimeLimit = 1f;
+    [SerializeField] float[] lightAttackComboDamage = new float[3];
+    [SerializeField] float[] heavyAttackComboDamage = new float[2];
     [SerializeField] float lightAttackCooldown;
+    [SerializeField] float heavyAttackCooldown;
     bool isAttacking;
     bool canAttack = true;
 
+    //health
+    [SerializeField] int maxhealth = 6;
+    int currentHealth;
+    bool iFramesActive;
+
+    public static PlayerController Instance { get; set; }
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +59,8 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        currentHealth = maxhealth;
     }
 
     // Update is called once per frame
@@ -47,13 +68,16 @@ public class PlayerController : MonoBehaviour
     {
         if (!isDashing)
         {
-            Move();
-           
-            Attack();
-
-            if (InputManager.Instance.Dash() && CanDash())
+            if (!knockbackApplied)
             {
-                StartCoroutine(Dash());
+                Move();
+
+                Attack();
+
+                if (InputManager.Instance.Dash() && CanDash())
+                {
+                    StartCoroutine(Dash());
+                }
             }
         }
     }
@@ -83,6 +107,8 @@ public class PlayerController : MonoBehaviour
             }
 
             controller.Move(moveDir * speed * Time.deltaTime);
+
+            transform.position = new Vector3(transform.position.x, 1, transform.position.z);
         }
 
         camLookAt.rotation = cam.rotation;
@@ -98,12 +124,14 @@ public class PlayerController : MonoBehaviour
 
         isDashing = true;
 
-        //GetComponent<MeshRenderer>().enabled = false;
         foreach(MeshRenderer mesh in GetComponentsInChildren<MeshRenderer>())
         {
             mesh.enabled = false;
         }
 
+        controller.detectCollisions = false;
+
+        GetComponentInChildren<BoxCollider>().enabled = false;
 
         ParticleManager.Instance.SpawnParticle(ParticleTypes.DashStart, transform.position);
 
@@ -122,11 +150,14 @@ public class PlayerController : MonoBehaviour
 
         dashTrail.emitting = false;
 
-        //GetComponent<MeshRenderer>().enabled = true;
         foreach (MeshRenderer mesh in GetComponentsInChildren<MeshRenderer>())
         {
             mesh.enabled = true;
         }
+
+        controller.detectCollisions = true;
+
+        GetComponentInChildren<BoxCollider>().enabled = true;
 
         isDashing = false;
 
@@ -156,11 +187,6 @@ public class PlayerController : MonoBehaviour
             isAttacking = false;
 
             AnimationManager.Instance.PlayerAttackCombo(GetComponent<Animator>(), 0);
-        }
-
-        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("2nd Attack"))
-        {
-            print(GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime);
         }
 
         if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 0.4f 
@@ -214,5 +240,93 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(lightAttackCooldown);
 
         canAttack = true;
+    }
+
+    IEnumerator HeavyAttackCooldown()
+    {
+        canAttack = false;
+
+        yield return new WaitForSeconds(heavyAttackCooldown);
+
+        canAttack = true;
+    }
+
+    public void ApplyKnockback(float knockbackForce, Vector3 knockbackOrigin)
+    {
+        controller.enabled = false;
+
+        if (body == null)
+        {
+            body = gameObject.AddComponent<Rigidbody>();
+        }
+
+        body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
+
+        body.mass = 1;
+        body.drag = 5;
+
+        Vector3 directionOfKnockback = (transform.position - knockbackOrigin).normalized;
+
+        directionOfKnockback.y = 0;
+
+        body.AddForce(directionOfKnockback * knockbackForce, ForceMode.Impulse);
+
+        knockbackApplied = true;
+
+        StartCoroutine(RemoveKnockback());
+    }
+
+    IEnumerator RemoveKnockback()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        while (knockbackApplied)
+        {
+            if (body.velocity.magnitude < 2f)
+            {
+                Destroy(gameObject.GetComponent<Rigidbody>());
+
+                body = null;
+
+                controller.enabled = true;
+
+                knockbackApplied = false;
+            }
+
+            yield return null;
+        }
+
+        yield return null;
+    }
+
+    public void TakeDamage()
+    {
+        currentHealth--;
+
+        StartCoroutine(ActivateIFrames());
+    }
+
+    IEnumerator ActivateIFrames()
+    {
+        iFramesActive = true;
+
+        yield return new WaitForSeconds(1);
+
+        iFramesActive = false;
+    }
+
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxhealth;
+    }
+
+    public bool GetIFramesActive()
+    {
+        return iFramesActive;
     }
 }

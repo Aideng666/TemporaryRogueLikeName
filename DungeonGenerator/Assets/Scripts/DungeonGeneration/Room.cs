@@ -41,7 +41,7 @@ public class Room : MonoBehaviour
 
     protected virtual void Start()
     {
-        player = FindObjectOfType<PlayerController>();
+        player = PlayerController.Instance;
 
         minimapGround.SetActive(false);
     }

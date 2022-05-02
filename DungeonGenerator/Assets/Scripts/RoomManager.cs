@@ -22,7 +22,7 @@ public class RoomManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = FindObjectOfType<PlayerController>();
+        player = PlayerController.Instance;
     }
 
     // Update is called once per frame
@@ -53,6 +53,8 @@ public class RoomManager : MonoBehaviour
 
         if (InputManager.Instance.CompleteRoom())
         {
+            player.TakeDamage();
+
             currentRoom.SetRoomCompleted(true);
         }
 

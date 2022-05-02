@@ -657,6 +657,15 @@ MonoBehaviour:
   speed: 30
   dashTimespan: 0.2
   dashCooldown: 1
+  lightAttackComboDamage:
+  - 0
+  - 0
+  - 0
+  heavyAttackComboDamage:
+  - 0
+  - 0
+  lightAttackCooldown: 0
+  heavyAttackCooldown: 0
 --- !u!143 &4553561031822148130
 CharacterController:
   m_ObjectHideFlags: 0
