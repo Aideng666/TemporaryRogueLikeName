@@ -658,14 +658,15 @@ MonoBehaviour:
   dashTimespan: 0.2
   dashCooldown: 1
   lightAttackComboDamage:
-  - 0
-  - 0
-  - 0
+  - 5
+  - 5
+  - 10
   heavyAttackComboDamage:
-  - 0
-  - 0
+  - 10
+  - 15
   lightAttackCooldown: 0
   heavyAttackCooldown: 0
+  maxhealth: 6
 --- !u!143 &4553561031822148130
 CharacterController:
   m_ObjectHideFlags: 0

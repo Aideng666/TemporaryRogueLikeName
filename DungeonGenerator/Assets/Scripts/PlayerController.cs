@@ -329,4 +329,9 @@ public class PlayerController : MonoBehaviour
     {
         return iFramesActive;
     }
+
+    public float[] GetLightAttackDamages()
+    {
+        return lightAttackComboDamage;
+    }
 }

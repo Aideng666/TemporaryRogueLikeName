@@ -26,6 +26,11 @@ public class Enemy : MonoBehaviour
         {
             knockbackApplied = false;
         }
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     protected virtual void Attack()
@@ -42,5 +47,10 @@ public class Enemy : MonoBehaviour
         body.AddForce(directionOfKnockback * knockbackForce, ForceMode.Impulse);
 
         knockbackApplied = true;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
     }
 }

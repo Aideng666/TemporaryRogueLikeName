@@ -20,14 +20,25 @@ public class Sword : MonoBehaviour
         {
             collision.gameObject.GetComponent<Enemy>().ApplyKnockback(25, player.transform.position);
         }
+
+        if(player.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("1st Attack"))
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(player.GetLightAttackDamages()[0]);
+        }
+        else if (player.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("2nd Attack"))
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(player.GetLightAttackDamages()[1]);
+        }
+        else if (player.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack"))
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(player.GetLightAttackDamages()[2]);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("1st Attack")
-            || player.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("2nd Attack")
-            || player.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack"))
+        if (!player.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
             isAttacking = true;
         }
