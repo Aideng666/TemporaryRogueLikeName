@@ -255,6 +255,26 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 81ea2b8f-6502-4b09-80fe-ac49a2abc668
     m_ActionName: Player /Camera Movement[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d6e8c9b7-1a12-4802-b5ca-cc55fea4b299
+    m_ActionName: Player /HeavyAttack[/Mouse/rightButton,/DualShock4GamepadHID/rightTrigger]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0ef3dc91-aa85-4f54-b535-d661ecc828db
+    m_ActionName: Player /Skill1[/Keyboard/q,/DualShock4GamepadHID/buttonWest]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 580533fe-1201-4242-ad7e-58630610a1e4
+    m_ActionName: Player /Skill2[/Keyboard/e,/DualShock4GamepadHID/buttonNorth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5068192a-9a62-4b1b-94bc-cd38452e7d24
+    m_ActionName: Player /Skill3[/Keyboard/r,/DualShock4GamepadHID/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7ad24e35-1407-427d-b037-3559d8418452
+    m_ActionName: Player /Skill4[/Keyboard/c,/DualShock4GamepadHID/buttonSouth]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: 'Player '
@@ -1178,7 +1198,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.2440782, y: 1}
+    m_SensorSize: {x: 1.9472743, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1615,6 +1635,27 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_ApplyBeforeBody: 0
+--- !u!1 &1769949364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4553561031822148132, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
+  m_PrefabInstance: {fileID: 4553561031302103509}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1769949369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769949364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e85c47441ea271b49a41839ac423db8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
+  cooldown: 5
+  chainShotPrefab: {fileID: 7202871079386734366, guid: ce37d794167dba94c8e4b74571b59539, type: 3}
+  defaultTotalRicochets: 3
 --- !u!1001 &4553561031302103509
 PrefabInstance:
   m_ObjectHideFlags: 0

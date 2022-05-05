@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,11 @@ public class Room : MonoBehaviour
     [Header("Minimap Objects")]
     [SerializeField] protected GameObject minimapGround;
 
+    [Header("Enemies/Obstacles")]
+    [SerializeField] protected List<FightRoomSpawnInformation> possibleSpawnInformations = new List<FightRoomSpawnInformation>();
+
+    protected List<GameObject> currentEnemiesInRoom = new List<GameObject>();
+
     protected PlayerController player;
 
     protected Room originRoom;
@@ -41,6 +47,8 @@ public class Room : MonoBehaviour
     protected bool roomCompleted;
     protected bool doorsOpen;
     protected bool isCurrentRoom;
+
+    protected FightRoomSpawnInformation spawnInfo;
 
     protected virtual void Start()
     {
@@ -103,6 +111,11 @@ public class Room : MonoBehaviour
     public bool GetRoomCompleted()
     {
         return roomCompleted;
+    }
+
+    public List<GameObject> GetEnemiesInRoom()
+    {
+        return currentEnemiesInRoom;
     }
 
     public bool GetIsCurrentRoom()
@@ -179,89 +192,38 @@ public class Room : MonoBehaviour
 
             case RoomTypes.Fight:
 
-                var enemy = Instantiate(enemyPrefab, new Vector3(transform.position.x, enemyPrefab.transform.position.y, transform.position.z), Quaternion.identity);
+                //var enemy = Instantiate(enemyPrefab, new Vector3(transform.position.x, enemyPrefab.transform.position.y, transform.position.z), Quaternion.identity);
 
-                enemy.GetComponent<Enemy>().SetRoom(this);
+                //enemy.GetComponent<Enemy>().SetRoom(this);
+
+                ChooseRandomEnemySpawnGroup();
 
                 break;
         }
     }
 
-    //public void SetRoomType(RoomTypes type)
-    //{
-    //    roomType = type;
+    protected void ChooseRandomEnemySpawnGroup()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, possibleSpawnInformations.Count);
 
-    //    switch (type)
-    //    {
-    //        case RoomTypes.Start:
+        List<Vector3> enemyPositions = possibleSpawnInformations[randomIndex].enemyPositions;
+        List<EnemyTypes> enemyTypes = possibleSpawnInformations[randomIndex].enemyTypes;
 
-    //            distanceFromStart = 0;
+        List<GameObject> enemyPrefabs = possibleSpawnInformations[randomIndex].listOfUsedEnemies;
 
-    //            roomCompleted = true;
+        for (int i = 0; i < enemyTypes.Count; i++)
+        {
+            for (int j = 0; j < enemyPrefabs.Count; j++)
+            {
+                if (enemyPrefabs[j].GetComponent<Enemy>().GetEnemyType() == enemyTypes[i])
+                {
+                    var enemy = Instantiate(enemyPrefabs[j], transform.position + new Vector3(enemyPositions[i].x, enemyPrefabs[j].transform.position.y, enemyPositions[i].z), Quaternion.identity);
 
-    //            ground.GetComponent<MeshRenderer>().material = startRoomMaterial;
-
-    //            minimapGround.GetComponent<MeshRenderer>().material = startRoomMaterial;
-
-    //            break;
-
-    //        case RoomTypes.Boss:
-
-    //            ground.GetComponent<MeshRenderer>().material = endRoomMaterial;
-
-    //            minimapGround.GetComponent<MeshRenderer>().material = endRoomMaterial;
-
-    //            switch (directionOfOrigin)
-    //            {
-    //                case DirectionsEnum.North:
-
-    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.back * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.South);
-
-    //                    break;
-
-    //                case DirectionsEnum.East:
-
-    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.left * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.West);
-
-    //                    break;
-
-    //                case DirectionsEnum.South:
-
-    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.forward * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.North);
-
-    //                    break;
-
-    //                case DirectionsEnum.West:
-
-    //                    Generator.Instance.SpawnBossRoom(transform.position + (Vector3.right * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.East);
-
-    //                    break;
-    //            }
-
-    //            break;
-
-    //        case RoomTypes.Shop:
-
-    //            roomCompleted = true;
-
-    //            ground.GetComponent<MeshRenderer>().material = shopRoomMaterial;
-
-    //            minimapGround.GetComponent<MeshRenderer>().material = shopRoomMaterial;
-
-    //            break;
-
-    //        case RoomTypes.Item:
-
-    //            roomCompleted = true;
-
-    //            ground.GetComponent<MeshRenderer>().material = itemRoomMaterial;
-
-    //            minimapGround.GetComponent<MeshRenderer>().material = itemRoomMaterial;
-
-    //            break;
-    //    }
-    //}
-
+                    enemy.GetComponent<Enemy>().SetRoom(this);
+                }
+            }
+        }
+    }
     public void SetOrigin(Room origin, DirectionsEnum direction)
     {
         originRoom = origin;

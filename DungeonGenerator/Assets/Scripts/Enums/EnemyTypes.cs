@@ -5,5 +5,7 @@ using UnityEngine;
 public enum EnemyTypes
 {
     Enemy,
-    SimpleFollow
+    SimpleFollow,
+    Splitter,
+    Bouncer
 }

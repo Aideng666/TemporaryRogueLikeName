@@ -90,8 +90,6 @@ public class Generator : MonoBehaviour
 
     public void SpawnBossRoom(Vector3 position, Room origin, Room roomToReplace, DirectionsEnum directionOfOrigin, DirectionsEnum directionFromOrigin)
     {
-        print("Spawning Boss Room");
-
         for (int i = 0; i < rooms.Count; i++)
         {
             if (rooms[i].transform.position == roomToReplace.transform.position)

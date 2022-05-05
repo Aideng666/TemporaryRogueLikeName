@@ -53,8 +53,6 @@ public class RoomManager : MonoBehaviour
 
         if (InputManager.Instance.CompleteRoom())
         {
-            player.TakeDamage();
-
             currentRoom.SetRoomCompleted(true);
         }
 

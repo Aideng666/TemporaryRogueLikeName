@@ -9,8 +9,6 @@ public class SimpleFollowMeleeEnemy : Enemy
     protected override void Start()
     {
         base.Start();
-
-        type = EnemyTypes.SimpleFollow;
     }
 
     protected override void Update()
@@ -45,7 +43,12 @@ public class SimpleFollowMeleeEnemy : Enemy
         base.Attack();
     }
 
-    void FollowPlayer()
+    protected override void Die()
+    {
+        base.Die();
+    }
+
+    protected void FollowPlayer()
     {
         Vector3 direction = (player.transform.position - transform.position).normalized;
 

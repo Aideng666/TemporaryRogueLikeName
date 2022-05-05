@@ -7,13 +7,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected float health;
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected Material tookDamageMaterial;
+    [SerializeField ] protected EnemyTypes type;
 
     protected PlayerController player;
     protected Rigidbody body;
     protected Room room;
     protected Material startingMaterial;
 
-    protected EnemyTypes type;
 
     protected bool knockbackApplied;
     protected bool checkRemoveKnockback;
@@ -23,8 +23,6 @@ public class Enemy : MonoBehaviour
     {
         body = GetComponent<Rigidbody>();
         player = PlayerController.Instance;
-
-        type = EnemyTypes.Enemy;
 
         startingMaterial = GetComponent<MeshRenderer>().material;
     }
@@ -41,15 +39,24 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
-            Destroy(gameObject);
+            Die();
 
+            //TEMP//
             room.SetRoomCompleted(true);
+            ////////
         }
     }
 
     protected virtual void Attack()
     {
 
+    }
+
+    protected virtual void Die()
+    {
+        Destroy(gameObject);
+
+        room.GetEnemiesInRoom().Remove(this.gameObject);
     }
 
     public void ApplyKnockbackFromOriginPoint(float knockbackForce, Vector3 knockbackOrigin)
@@ -104,5 +111,12 @@ public class Enemy : MonoBehaviour
     public void SetRoom(Room r)
     {
         room = r;
+
+        room.GetEnemiesInRoom().Add(this.gameObject);
+    }
+
+    public EnemyTypes GetEnemyType()
+    {
+        return type;
     }
 }
