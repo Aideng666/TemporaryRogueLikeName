@@ -18,10 +18,12 @@ public class PlayerController : MonoBehaviour
     Rigidbody body;
 
     //Movement Variables
-    [SerializeField] float speed;
+    [SerializeField] float defaultSpeed;
+    [SerializeField] float speedWhileAttacking;
     [SerializeField] float dashTimespan;
     [SerializeField] float dashCooldown = 2;
     TrailRenderer dashTrail;
+    float speed;
     float timeToNextDash = 0;
     bool isDashing;
     bool knockbackApplied;
@@ -48,6 +50,9 @@ public class PlayerController : MonoBehaviour
     int currentHealth;
     bool iFramesActive;
 
+    int dashLayer;
+    int playerLayer;
+
     public static PlayerController Instance { get; set; }
 
     private void Awake()
@@ -62,10 +67,15 @@ public class PlayerController : MonoBehaviour
 
         dashTrail.emitting = false;
 
+        speed = defaultSpeed;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         currentHealth = maxhealth;
+
+        dashLayer = LayerMask.NameToLayer("Dash");
+        playerLayer = LayerMask.NameToLayer("Player");
     }
 
     // Update is called once per frame
@@ -74,18 +84,22 @@ public class PlayerController : MonoBehaviour
         if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
             attackState = PlayerAttackStates.Idle;
+            speed = defaultSpeed;
         }
         else if(GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("1st Attack"))
         {
             attackState = PlayerAttackStates.Light1;
+            speed = speedWhileAttacking;
         }
         else if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("2nd Attack"))
         {
             attackState = PlayerAttackStates.Light2;
+            speed = speedWhileAttacking;
         }
         else if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack"))
         {
             attackState = PlayerAttackStates.Light3;
+            speed = speedWhileAttacking;
         }
 
         if (attackState != previousAttackState)
@@ -159,9 +173,8 @@ public class PlayerController : MonoBehaviour
             mesh.enabled = false;
         }
 
-        controller.detectCollisions = false;
-
-        GetComponentInChildren<BoxCollider>().enabled = false;
+        //controller.detectCollisions = false;
+        gameObject.layer = dashLayer;
 
         ParticleManager.Instance.SpawnParticle(ParticleTypes.DashStart, transform.position);
 
@@ -171,7 +184,7 @@ public class PlayerController : MonoBehaviour
 
         while (timeElasped < dashTimespan)
         {
-            controller.Move(dashDirection * speed * 5 * Time.deltaTime);
+            controller.Move(dashDirection * defaultSpeed * 5 * Time.deltaTime);
 
             timeElasped += Time.deltaTime;
 
@@ -185,9 +198,8 @@ public class PlayerController : MonoBehaviour
             mesh.enabled = true;
         }
 
-        controller.detectCollisions = true;
-
-        GetComponentInChildren<BoxCollider>().enabled = true;
+        //controller.detectCollisions = true;
+        gameObject.layer = playerLayer;
 
         isDashing = false;
 
@@ -274,7 +286,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (isAttacking && activateCollider)
+        if (/*isAttacking && */activateCollider && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 0.2f)
         {
             Collider[] enemiesHit;
 

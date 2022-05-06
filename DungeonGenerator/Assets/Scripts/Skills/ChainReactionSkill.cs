@@ -10,6 +10,7 @@ public class ChainReactionSkill : Skill
     int totalRicochets;
 
     GameObject chainShot;
+    GameObject previousEnemy;
 
     List<GameObject> enemiesAlreadyHit = new List<GameObject>();
     
@@ -29,7 +30,7 @@ public class ChainReactionSkill : Skill
     {
         chainShot = Instantiate(chainShotPrefab, player.transform.position, Quaternion.identity);
 
-        if (RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom().Count < 3)
+        if (RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom().Count == 1)
         {
             totalRicochets = RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom().Count;
         }
@@ -43,6 +44,8 @@ public class ChainReactionSkill : Skill
 
     IEnumerator MoveToNextTarget()
     {
+        previousEnemy = null;
+
         for (int i = 0; i < totalRicochets; i++)
         {
             GameObject targetEnemy = FindClosestEnemy();
@@ -66,6 +69,8 @@ public class ChainReactionSkill : Skill
 
             targetEnemy.GetComponent<Enemy>().TakeDamage(damage);
 
+            previousEnemy = targetEnemy;
+
             enemiesAlreadyHit.Add(targetEnemy);
 
             yield return null;
@@ -79,22 +84,22 @@ public class ChainReactionSkill : Skill
 
     GameObject FindClosestEnemy()
     {
-        GameObject currentClosestEnemy = RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom()[0];
-        Vector3 startPos = chainShot.transform.position;
+        List<GameObject> possibleEnemies = new List<GameObject>();
 
         foreach (GameObject enemy in RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom())
         {
-            bool canSelectEnemy = true;
-
-            for (int i = 0; i < enemiesAlreadyHit.Count; i++)
+            if (previousEnemy != enemy)
             {
-                if (enemy == enemiesAlreadyHit[i])
-                {
-                    canSelectEnemy = false;
-                }
+                possibleEnemies.Add(enemy);
             }
+        }
 
-            if (Vector3.Distance(startPos, enemy.transform.position) < Vector3.Distance(startPos, currentClosestEnemy.transform.position) && canSelectEnemy)
+        GameObject currentClosestEnemy = possibleEnemies[0];
+        Vector3 startPos = chainShot.transform.position;
+
+        foreach (GameObject enemy in possibleEnemies)
+        {
+            if (Vector3.Distance(startPos, enemy.transform.position) < Vector3.Distance(startPos, currentClosestEnemy.transform.position) && previousEnemy != enemy)
             {
                 currentClosestEnemy = enemy;
             }

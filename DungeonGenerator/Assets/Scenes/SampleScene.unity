@@ -1198,7 +1198,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9472743, y: 1}
+    m_SensorSize: {x: 1.950761, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1653,7 +1653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 5
-  cooldown: 5
+  cooldown: 0.5
   chainShotPrefab: {fileID: 7202871079386734366, guid: ce37d794167dba94c8e4b74571b59539, type: 3}
   defaultTotalRicochets: 3
 --- !u!1001 &4553561031302103509
@@ -1708,6 +1708,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4553561031822148130, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553561031822148130, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
       propertyPath: m_SlopeLimit
       value: 0
       objectReference: {fileID: 0}
@@ -1720,8 +1724,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 963194228}
     - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
+      propertyPath: defaultSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
+      propertyPath: dashLayer.m_Bits
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
+      propertyPath: playerLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
       propertyPath: lightAttackCooldown
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
+      propertyPath: speedWhileAttacking
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
       propertyPath: heavyAttackComboDamage.Array.data[0]
@@ -1747,7 +1767,8 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3149295532676397569, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
 --- !u!4 &4553561031302103510 stripped
 Transform:
