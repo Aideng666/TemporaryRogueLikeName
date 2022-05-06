@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     int currentHealth;
     bool iFramesActive;
 
-    int dashLayer;
+    int invincibleLayer;
     int playerLayer;
 
     public static PlayerController Instance { get; set; }
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
 
         currentHealth = maxhealth;
 
-        dashLayer = LayerMask.NameToLayer("Dash");
+        invincibleLayer = LayerMask.NameToLayer("Invincible");
         playerLayer = LayerMask.NameToLayer("Player");
     }
 
@@ -174,7 +174,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //controller.detectCollisions = false;
-        gameObject.layer = dashLayer;
+        gameObject.layer = invincibleLayer;
 
         ParticleManager.Instance.SpawnParticle(ParticleTypes.DashStart, transform.position);
 
@@ -298,7 +298,7 @@ public class PlayerController : MonoBehaviour
 
                     foreach (Collider enemy in enemiesHit)
                     {
-                        enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(35, (attackPoint.position - transform.position).normalized);
+                        enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(25, (attackPoint.position - transform.position).normalized);
 
                         enemy.GetComponent<Enemy>().TakeDamage(lightAttackComboDamage[0]);
                     }
@@ -311,7 +311,7 @@ public class PlayerController : MonoBehaviour
 
                     foreach (Collider enemy in enemiesHit)
                     {
-                        enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(35, (attackPoint.position - transform.position).normalized);
+                        enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(25, (attackPoint.position - transform.position).normalized);
 
                         enemy.GetComponent<Enemy>().TakeDamage(lightAttackComboDamage[1]);
                     }
@@ -320,7 +320,7 @@ public class PlayerController : MonoBehaviour
 
                 case PlayerAttackStates.Light3:
 
-                    enemiesHit = Physics.OverlapBox(transform.position, new Vector3(5, 0.5f, 5), Quaternion.identity, enemyLayer);
+                    enemiesHit = Physics.OverlapBox(transform.position, new Vector3(6, 0.5f, 6), Quaternion.identity, enemyLayer);
 
                     foreach (Collider enemy in enemiesHit)
                     {
@@ -342,11 +342,12 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
 
-        Collider[] enemiesHit = Physics.OverlapBox(transform.position, new Vector3(4, 0.5f, 4), Quaternion.identity, enemyLayer);
+        Collider[] enemiesHit = Physics.OverlapBox(transform.position, new Vector3(6, 0.5f, 6), Quaternion.identity, enemyLayer);
 
         foreach (Collider enemy in enemiesHit)
         {
-            enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(40, (attackPoint.position - transform.position).normalized);
+            //enemy.GetComponent<Enemy>().ApplyKnockbackInDirection(40, (attackPoint.position - transform.position).normalized);
+            enemy.GetComponent<Enemy>().ApplyKnockbackFromOriginPoint(40, transform.position);
 
             enemy.GetComponent<Enemy>().TakeDamage(lightAttackComboDamage[2]);
         }
@@ -420,16 +421,23 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage()
     {
-        currentHealth--;
+        if (!iFramesActive)
+        {
+            currentHealth--;
 
-        StartCoroutine(ActivateIFrames());
+            StartCoroutine(ActivateIFrames());
+        }
     }
 
     IEnumerator ActivateIFrames()
     {
         iFramesActive = true;
 
+        gameObject.layer = invincibleLayer;
+
         yield return new WaitForSeconds(1);
+
+        gameObject.layer = playerLayer;
 
         iFramesActive = false;
     }

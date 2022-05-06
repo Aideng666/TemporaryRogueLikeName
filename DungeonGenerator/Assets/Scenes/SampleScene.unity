@@ -1741,7 +1741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
       propertyPath: speedWhileAttacking
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4553561031822148131, guid: d864cfe1046ecd940a0758d394b5e7f5, type: 3}
       propertyPath: heavyAttackComboDamage.Array.data[0]

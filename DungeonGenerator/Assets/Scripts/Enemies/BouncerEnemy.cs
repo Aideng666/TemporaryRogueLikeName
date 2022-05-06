@@ -28,12 +28,9 @@ public class BouncerEnemy : Enemy
     {
         if (collision.gameObject.GetComponent<PlayerController>() != null)
         {
-            if (!player.GetIFramesActive())
-            {
-                collision.gameObject.GetComponent<PlayerController>().ApplyKnockback(30, transform.position);
+            collision.gameObject.GetComponent<PlayerController>().ApplyKnockback(30, transform.position);
 
-                player.TakeDamage();
-            }
+            player.TakeDamage();
         }
     }
 

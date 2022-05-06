@@ -6,6 +6,9 @@ public class SimpleFollowMeleeEnemy : Enemy
 {
     bool canMove = true;
 
+    float delayOnStartTimer = 0;
+    float startDelay = 1;
+
     protected override void Start()
     {
         base.Start();
@@ -15,11 +18,18 @@ public class SimpleFollowMeleeEnemy : Enemy
     {
         base.Update();
 
-        transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
-
-        if (!knockbackApplied && canMove && room.GetIsCurrentRoom())
+        if (delayOnStartTimer > startDelay)
         {
-            FollowPlayer();
+            transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
+
+            if (!knockbackApplied && canMove && room.GetIsCurrentRoom())
+            {
+                FollowPlayer();
+            }
+        }
+        else
+        {
+            delayOnStartTimer += Time.deltaTime;
         }
     }
 
@@ -27,12 +37,9 @@ public class SimpleFollowMeleeEnemy : Enemy
     {
         if (collision.gameObject.GetComponent<PlayerController>() != null)
         {
-            if (!player.GetIFramesActive())
-            {
-                collision.gameObject.GetComponent<PlayerController>().ApplyKnockback(30, transform.position);
+            collision.gameObject.GetComponent<PlayerController>().ApplyKnockback(30, transform.position);
 
-                player.TakeDamage();
-            }
+            player.TakeDamage();
 
             StartCoroutine(PauseAfterAttack());
         }
