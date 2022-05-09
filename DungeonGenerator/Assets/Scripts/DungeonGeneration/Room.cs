@@ -29,10 +29,14 @@ public class Room : MonoBehaviour
     [Header("Minimap Objects")]
     [SerializeField] protected GameObject minimapGround;
 
-    [Header("Enemies/Obstacles")]
+    [Header("Fight Room Variables")]
     [SerializeField] protected List<FightRoomSpawnInformation> possibleSpawnInformations = new List<FightRoomSpawnInformation>();
 
+    [Header("Item Room Variables")]
+    [SerializeField] protected GameObject skillPedestalPrefab;
+
     protected List<GameObject> currentEnemiesInRoom = new List<GameObject>();
+    protected List<GameObject> currentSkillPedestalsInRoom = new List<GameObject>();
 
     protected PlayerController player;
 
@@ -48,7 +52,7 @@ public class Room : MonoBehaviour
     protected bool doorsOpen;
     protected bool isCurrentRoom;
 
-    protected FightRoomSpawnInformation spawnInfo;
+    //protected FightRoomSpawnInformation spawnInfo;
 
     protected virtual void Start()
     {
@@ -188,13 +192,11 @@ public class Room : MonoBehaviour
 
                 minimapGround.GetComponent<MeshRenderer>().material = itemRoomMaterial;
 
+                SpawnItemPedestals();
+
                 break;
 
             case RoomTypes.Fight:
-
-                //var enemy = Instantiate(enemyPrefab, new Vector3(transform.position.x, enemyPrefab.transform.position.y, transform.position.z), Quaternion.identity);
-
-                //enemy.GetComponent<Enemy>().SetRoom(this);
 
                 ChooseRandomEnemySpawnGroup();
 
@@ -224,6 +226,21 @@ public class Room : MonoBehaviour
             }
         }
     }
+
+    protected void SpawnItemPedestals()
+    {
+        var pedestal = Instantiate(skillPedestalPrefab, transform.position + new Vector3(-25, skillPedestalPrefab.transform.position.y, 0), Quaternion.identity);
+
+        currentSkillPedestalsInRoom.Add(pedestal);
+
+        pedestal = Instantiate(skillPedestalPrefab, transform.position + new Vector3(25, skillPedestalPrefab.transform.position.y, 0), Quaternion.identity);
+
+        currentSkillPedestalsInRoom.Add(pedestal);
+
+        currentSkillPedestalsInRoom[0].GetComponent<SkillPedestal>().SetPartner(currentSkillPedestalsInRoom[1].GetComponent<SkillPedestal>());
+        currentSkillPedestalsInRoom[1].GetComponent<SkillPedestal>().SetPartner(currentSkillPedestalsInRoom[0].GetComponent<SkillPedestal>());
+    }
+
     public void SetOrigin(Room origin, DirectionsEnum direction)
     {
         originRoom = origin;

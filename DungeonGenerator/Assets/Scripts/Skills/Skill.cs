@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    [SerializeField] protected float damage;
-    [SerializeField] protected float cooldown;
+    //Change these to the scriptable object
+    //[SerializeField] protected float damage = 5;
+    //[SerializeField] protected float cooldown = 1;
+    ////////////////////////////////////////
 
-    float timeToNextSkillUse = 0;
+    [SerializeField] protected SkillInfo skillInfo;
+
+    protected float timeToNextSkillUse = 0;
 
     protected PlayerController player;
 
@@ -15,31 +19,29 @@ public class Skill : MonoBehaviour
     protected virtual void Start()
     {
         player = PlayerController.Instance;
+
+        timeToNextSkillUse = 0;
     }
 
     // Update is called once per frame
     protected virtual void Update()
     {
-        if (InputManager.Instance.Skill1() && CanUseSkill())
-        {
-            UseSkill();
-        }
+
     }
 
-    protected virtual void UseSkill()
+    public virtual void UseSkill()
     {
 
     }
 
-    protected bool CanUseSkill()
+    public bool CanUseSkill()
     {
         if (Time.time > timeToNextSkillUse)
         {
-            timeToNextSkillUse = Time.time + cooldown;
+            timeToNextSkillUse = Time.time + skillInfo.cooldown;
 
             return true;
         }
-
         return false;
     }
 }

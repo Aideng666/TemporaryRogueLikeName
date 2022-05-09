@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     bool canAttack = true;
     PlayerAttackStates attackState = PlayerAttackStates.Idle;
     PlayerAttackStates previousAttackState = PlayerAttackStates.Idle;
+    Skill[] equippedSkills = new Skill[4];
 
 
     //health
@@ -115,6 +116,8 @@ public class PlayerController : MonoBehaviour
                 Move();
 
                 Attack();
+
+                UseSkills();
 
                 if (InputManager.Instance.Dash() && CanDash())
                 {
@@ -338,6 +341,56 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void UseSkills()
+    {    
+        if (equippedSkills[0] != null)
+        {
+            if (InputManager.Instance.Skill1() && equippedSkills[0].CanUseSkill())
+            {
+                equippedSkills[0].UseSkill();
+            }
+        }
+
+        if (equippedSkills[1] != null)
+        {
+            if (InputManager.Instance.Skill2() && equippedSkills[1].CanUseSkill())
+            {
+                equippedSkills[1].UseSkill();
+            }
+        }
+
+        if (equippedSkills[2] != null)
+        {
+            if (InputManager.Instance.Skill3() && equippedSkills[2].CanUseSkill())
+            {
+                equippedSkills[2].UseSkill();
+            }
+        }
+
+        if (equippedSkills[3] != null)
+        {
+            if (InputManager.Instance.Skill4() && equippedSkills[3].CanUseSkill())
+            {
+                equippedSkills[3].UseSkill();
+            }
+        }
+    }
+
+    public void EquipSkill(Skill newSkill)
+    {
+        for (int i = 0; i < equippedSkills.Length; i++)
+        {
+            if (equippedSkills[i] == null)
+            {
+                equippedSkills[i] = newSkill;
+
+                return;
+            }
+        }
+
+        //Write the code to swap between skills here (for when the player already has the max skills and wants a new one)
+    }
+
     IEnumerator ActivateSecondSpinAttack()
     {
         yield return new WaitForSeconds(0.2f);
@@ -466,6 +519,13 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.DrawWireCube(attackPoint.position, new Vector3(10, 1, 10));
         Gizmos.DrawWireCube(transform.position, new Vector3(10, 1, 10));
+    }
 
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.TryGetComponent<SkillPedestal>(out var pedestal))
+        {
+            pedestal.GiveSkill();
+        }
     }
 }

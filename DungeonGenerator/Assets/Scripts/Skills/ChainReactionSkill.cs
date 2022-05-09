@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class ChainReactionSkill : Skill
 {
-    [SerializeField] GameObject chainShotPrefab;
-    [SerializeField] int defaultTotalRicochets = 3;
+    //[SerializeField] GameObject chainShotPrefab;
+    //[SerializeField] int defaultTotalRicochets = 3;
 
-    int totalRicochets;
+    [SerializeField] GameObject projectile;
 
-    GameObject chainShot;
+    int totalRicochets = 3;
+
+    //GameObject chainShot;
     GameObject previousEnemy;
 
     List<GameObject> enemiesAlreadyHit = new List<GameObject>();
@@ -18,7 +20,9 @@ public class ChainReactionSkill : Skill
     {
         base.Start();
 
-        totalRicochets = defaultTotalRicochets;
+        projectile.SetActive(false);
+
+        //totalRicochets = defaultTotalRicochets;
     }
 
     protected override void Update()
@@ -26,9 +30,18 @@ public class ChainReactionSkill : Skill
         base.Update();
     }
 
-    protected override void UseSkill()
+    public override void UseSkill()
     {
-        chainShot = Instantiate(chainShotPrefab, player.transform.position, Quaternion.identity);
+        //chainShot = Instantiate(projectile, player.transform.position, Quaternion.identity);
+        if (RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom().Count < 1)
+        {
+            timeToNextSkillUse = Time.time + skillInfo.cooldown;
+
+            return;
+        }
+
+        projectile.SetActive(true);
+        projectile.transform.position = player.transform.position;
 
         if (RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom().Count == 1)
         {
@@ -36,7 +49,8 @@ public class ChainReactionSkill : Skill
         }
         else
         {
-            totalRicochets = defaultTotalRicochets;
+            //totalRicochets = defaultTotalRicochets;
+            totalRicochets = 3;
         }
 
         StartCoroutine(MoveToNextTarget());
@@ -53,21 +67,21 @@ public class ChainReactionSkill : Skill
             float timeElasped = 0;
             float totalTime = 0.1f;
 
-            Vector3 startPos = chainShot.transform.position;
+            Vector3 startPos = projectile.transform.position;
             Vector3 endPos = targetEnemy.transform.position;
 
             while (timeElasped < totalTime)
             {
                 float t = timeElasped / totalTime;
 
-                chainShot.transform.position = Vector3.Lerp(startPos, endPos, t);
+                projectile.transform.position = Vector3.Lerp(startPos, endPos, t);
 
                 timeElasped += Time.deltaTime;
 
                 yield return null;
             }
 
-            targetEnemy.GetComponent<Enemy>().TakeDamage(damage);
+            targetEnemy.GetComponent<Enemy>().TakeDamage(skillInfo.damage);
 
             previousEnemy = targetEnemy;
 
@@ -77,7 +91,7 @@ public class ChainReactionSkill : Skill
         }
 
         enemiesAlreadyHit = new List<GameObject>();
-        Destroy(chainShot);
+        projectile.SetActive(false);
 
         yield return null;
     }
@@ -95,7 +109,7 @@ public class ChainReactionSkill : Skill
         }
 
         GameObject currentClosestEnemy = possibleEnemies[0];
-        Vector3 startPos = chainShot.transform.position;
+        Vector3 startPos = projectile.transform.position;
 
         foreach (GameObject enemy in possibleEnemies)
         {
