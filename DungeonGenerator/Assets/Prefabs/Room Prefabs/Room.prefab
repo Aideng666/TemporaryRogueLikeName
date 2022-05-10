@@ -394,6 +394,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3239a1e63e52c074c9afa0f4c50634e0, type: 2}
   - {fileID: 11400000, guid: c73e7c9726a8cb54abbb8adc99748b97, type: 2}
   - {fileID: 11400000, guid: 6e6b0f0f3da49e9428618db3216dc3c8, type: 2}
+  possibleBosses:
+  - {fileID: 5020632694857087463, guid: 95403e6a218f4814ca40b043d97a2097, type: 3}
   skillPedestalPrefab: {fileID: 3623551006791453587, guid: e9afb8760d3b7e84cbfe51904a85684a, type: 3}
 --- !u!1 &7309127041805056762
 GameObject:

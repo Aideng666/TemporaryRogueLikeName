@@ -31,6 +31,7 @@ public class Room : MonoBehaviour
 
     [Header("Fight Room Variables")]
     [SerializeField] protected List<FightRoomSpawnInformation> possibleSpawnInformations = new List<FightRoomSpawnInformation>();
+    [SerializeField] protected List<GameObject> possibleBosses = new List<GameObject>();
 
     [Header("Item Room Variables")]
     [SerializeField] protected GameObject skillPedestalPrefab;
@@ -164,6 +165,8 @@ public class Room : MonoBehaviour
 
                 roomCompleted = true;
 
+                discovered = true;
+
                 ground.GetComponent<MeshRenderer>().material = startRoomMaterial;
 
                 minimapGround.GetComponent<MeshRenderer>().material = startRoomMaterial;
@@ -171,6 +174,12 @@ public class Room : MonoBehaviour
                 break;
 
             case RoomTypes.Boss:
+
+                ground.GetComponent<MeshRenderer>().material = endRoomMaterial;
+
+                minimapGround.GetComponent<MeshRenderer>().material = endRoomMaterial;
+
+                SpawnBoss();
 
                 break;
 
@@ -241,6 +250,15 @@ public class Room : MonoBehaviour
         currentSkillPedestalsInRoom[1].GetComponent<SkillPedestal>().SetPartner(currentSkillPedestalsInRoom[0].GetComponent<SkillPedestal>());
     }
 
+    protected void SpawnBoss()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, possibleBosses.Count);
+
+        var boss = Instantiate(possibleBosses[randomIndex], new Vector3(transform.position.x, possibleBosses[randomIndex].transform.position.y, transform.position.z), Quaternion.identity);
+
+        boss.GetComponent<BossEnemy>().SetRoom(this);
+    }
+
     public void SetOrigin(Room origin, DirectionsEnum direction)
     {
         originRoom = origin;
@@ -264,41 +282,41 @@ public class Room : MonoBehaviour
         roomNum = num;
     }
 
-    public void SetEndRoom()
-    {
-        SetRoomType(RoomTypes.Boss);
+    //public void SetEndRoom()
+    //{
+    //    SetRoomType(RoomTypes.Boss);
 
-        ground.GetComponent<MeshRenderer>().material = endRoomMaterial;
+        //ground.GetComponent<MeshRenderer>().material = endRoomMaterial;
 
-        minimapGround.GetComponent<MeshRenderer>().material = endRoomMaterial;
+        //minimapGround.GetComponent<MeshRenderer>().material = endRoomMaterial;
 
-        switch (directionOfOrigin)
-        {
-            case DirectionsEnum.North:
+        //switch (directionOfOrigin)
+        //{
+        //    case DirectionsEnum.North:
 
-                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.back * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.South);
+        //        Generator.Instance.SpawnBossRoom(transform.position + (Vector3.back * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.South);
 
-                break;
+        //        break;
 
-            case DirectionsEnum.East:
+        //    case DirectionsEnum.East:
 
-                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.left * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.West);
+        //        Generator.Instance.SpawnBossRoom(transform.position + (Vector3.left * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.West);
 
-                break;
+        //        break;
 
-            case DirectionsEnum.South:
+        //    case DirectionsEnum.South:
 
-                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.forward * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.North);
+        //        Generator.Instance.SpawnBossRoom(transform.position + (Vector3.forward * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.North);
 
-                break;
+        //        break;
 
-            case DirectionsEnum.West:
+        //    case DirectionsEnum.West:
 
-                Generator.Instance.SpawnBossRoom(transform.position + (Vector3.right * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.East);
+        //        Generator.Instance.SpawnBossRoom(transform.position + (Vector3.right * (sideLength / 2)), originRoom, this, directionOfOrigin, DirectionsEnum.East);
 
-                break;
-        }
-    }
+        //        break;
+        //}
+    //}
 
     public GameObject ChangeWall(DirectionsEnum direction, WallTypes type)
     {

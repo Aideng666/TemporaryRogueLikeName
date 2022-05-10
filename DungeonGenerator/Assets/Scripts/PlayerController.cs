@@ -474,6 +474,8 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage()
     {
+        print("Taking Damage");
+
         if (!iFramesActive)
         {
             currentHealth--;

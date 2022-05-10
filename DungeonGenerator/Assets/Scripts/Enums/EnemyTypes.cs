@@ -7,5 +7,6 @@ public enum EnemyTypes
     Enemy,
     SimpleFollow,
     Splitter,
-    Bouncer
+    Bouncer,
+    Boss
 }

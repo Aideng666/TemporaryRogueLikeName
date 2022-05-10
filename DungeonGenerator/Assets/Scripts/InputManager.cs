@@ -65,7 +65,6 @@ public class InputManager : MonoBehaviour
 
     public bool Skill1()
     {
-        print(skill1Action.triggered);
         return skill1Action.triggered;
     }
 

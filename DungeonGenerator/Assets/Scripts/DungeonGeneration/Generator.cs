@@ -48,8 +48,7 @@ public class Generator : MonoBehaviour
             }
         }
 
-        //currentEndRoom.SetRoomType(RoomTypes.Boss);
-        currentEndRoom.SetEndRoom();
+        currentEndRoom.SetRoomType(RoomTypes.Boss);
 
         CreateShopRoom();
 
