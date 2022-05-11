@@ -10,6 +10,8 @@ public class SkillInfo : ScriptableObject
     public float cooldown;
 
     public GameObject pedestalModel;
+    public Material orbMaterial;
+    public Color orbColor;
     public GameObject skillPrefab;
 
     //Add stuff for UI icons as well

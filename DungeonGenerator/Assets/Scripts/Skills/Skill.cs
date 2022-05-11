@@ -44,4 +44,9 @@ public class Skill : MonoBehaviour
         }
         return false;
     }
+
+    public SkillInfo GetSkillInfo()
+    {
+        return skillInfo;
+    }
 }

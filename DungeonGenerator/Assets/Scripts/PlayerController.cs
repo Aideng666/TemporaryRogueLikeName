@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     int numberOfClicks = 0;
     float lastClickTime = 0;
     float nextClickTimeLimit = 1f;
+    [SerializeField] GameObject[] skillOrbs = new GameObject[4];
     [SerializeField] float[] lightAttackComboDamage = new float[3];
     [SerializeField] float[] heavyAttackComboDamage = new float[2];
     [SerializeField] float lightAttackCooldown;
@@ -44,7 +45,6 @@ public class PlayerController : MonoBehaviour
     PlayerAttackStates attackState = PlayerAttackStates.Idle;
     PlayerAttackStates previousAttackState = PlayerAttackStates.Idle;
     Skill[] equippedSkills = new Skill[4];
-
 
     //health
     [SerializeField] int maxhealth = 6;
@@ -82,6 +82,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        for (int i = 0; i < skillOrbs.Length; i++)
+        {
+            if (equippedSkills[i] == null)
+            {
+                skillOrbs[i].GetComponent<MeshRenderer>().enabled = false;
+            }
+        }
+
         if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
             attackState = PlayerAttackStates.Idle;
@@ -134,13 +142,20 @@ public class PlayerController : MonoBehaviour
         if (!isAttacking || GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("3rd Attack"))
         {
             Vector2 direction = InputManager.Instance.Move();
+            Vector2 aimDirection = InputManager.Instance.Aim();
 
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;/* + Camera.main.transform.eulerAngles.y;*/
             moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
-            if (direction.magnitude > 0)
+            float aimAngle = Mathf.Atan2(aimDirection.x, aimDirection.y) * Mathf.Rad2Deg;/* + Camera.main.transform.eulerAngles.y;*/
+
+            if (aimDirection.magnitude <= 0.1f)
             {
-                transform.rotation = Quaternion.Euler(0, targetAngle, 0);
+                transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0, aimAngle, 0);
             }
 
             if (moveDir != Vector3.zero)
@@ -384,6 +399,10 @@ public class PlayerController : MonoBehaviour
             {
                 equippedSkills[i] = newSkill;
 
+                skillOrbs[i].GetComponent<MeshRenderer>().enabled = true;
+
+                skillOrbs[i].GetComponent<MeshRenderer>().material.color = equippedSkills[i].GetSkillInfo().orbColor;
+
                 return;
             }
         }
@@ -474,8 +493,6 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage()
     {
-        print("Taking Damage");
-
         if (!iFramesActive)
         {
             currentHealth--;

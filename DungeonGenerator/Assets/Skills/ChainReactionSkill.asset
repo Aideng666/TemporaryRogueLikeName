@@ -15,4 +15,6 @@ MonoBehaviour:
   damage: 5
   cooldown: 1
   pedestalModel: {fileID: 8389726227171140690, guid: 65e4e3b8fc51d444baeaaea04541fc07, type: 3}
+  orbMaterial: {fileID: 2100000, guid: 82a79fa90b09cc442af2c262c9a37730, type: 2}
+  orbColor: {r: 1, g: 0.8154073, b: 0, a: 0.39215687}
   skillPrefab: {fileID: 7202871079386734366, guid: ce37d794167dba94c8e4b74571b59539, type: 3}
