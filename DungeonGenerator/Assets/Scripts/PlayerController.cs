@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     //Inspector Variables
+    [SerializeField] bool controlWithMouse;
     [SerializeField] Transform cam;
     [SerializeField] Transform camLookAt;
     [SerializeField] Transform bodyToRotate;
@@ -70,8 +72,8 @@ public class PlayerController : MonoBehaviour
 
         speed = defaultSpeed;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
         currentHealth = maxhealth;
 
@@ -84,9 +86,13 @@ public class PlayerController : MonoBehaviour
     {
         for (int i = 0; i < skillOrbs.Length; i++)
         {
-            if (equippedSkills[i] == null)
+            if (equippedSkills[i] == null || !equippedSkills[i].GetCooldownComplete())
             {
                 skillOrbs[i].GetComponent<MeshRenderer>().enabled = false;
+            }
+            else if (equippedSkills[i].GetCooldownComplete())
+            {
+                skillOrbs[i].GetComponent<MeshRenderer>().enabled = true;
             }
         }
 
@@ -144,12 +150,33 @@ public class PlayerController : MonoBehaviour
             Vector2 direction = InputManager.Instance.Move();
             Vector2 aimDirection = InputManager.Instance.Aim();
 
+            Vector3 mousePos;
+            Vector3 mouseAimDirection = Vector3.zero;
+
+            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100))
+            {
+                mousePos = hit.point;
+
+                mouseAimDirection = (mousePos - transform.position).normalized;
+
+                mouseAimDirection.y = 0;
+            }
+
             float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;/* + Camera.main.transform.eulerAngles.y;*/
             moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
             float aimAngle = Mathf.Atan2(aimDirection.x, aimDirection.y) * Mathf.Rad2Deg;/* + Camera.main.transform.eulerAngles.y;*/
+            float mouseAimAngle = Mathf.Atan2(mouseAimDirection.x, mouseAimDirection.z) * Mathf.Rad2Deg;
 
-            if (aimDirection.magnitude <= 0.1f)
+
+            if (controlWithMouse)
+            {
+                transform.rotation = Quaternion.Euler(0, mouseAimAngle, 0);
+            }
+            else if (aimDirection.magnitude <= 0.1f)
             {
                 transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
             }

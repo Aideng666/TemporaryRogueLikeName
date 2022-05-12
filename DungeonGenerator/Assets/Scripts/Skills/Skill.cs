@@ -15,6 +15,8 @@ public class Skill : MonoBehaviour
 
     protected PlayerController player;
 
+    protected bool cooldownComplete = true;
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -26,7 +28,14 @@ public class Skill : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-
+        if (Time.time > timeToNextSkillUse)
+        {
+            cooldownComplete = true;
+        }
+        else
+        {
+            cooldownComplete = false;
+        }
     }
 
     public virtual void UseSkill()
@@ -48,5 +57,10 @@ public class Skill : MonoBehaviour
     public SkillInfo GetSkillInfo()
     {
         return skillInfo;
+    }
+
+    public bool GetCooldownComplete()
+    {
+        return cooldownComplete;
     }
 }

@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour
     InputAction dashAction;
     InputAction moveAction;
     InputAction aimAction;
+    InputAction mouseAimAction;
     InputAction lightAttackAction;
     InputAction heavyAttackAction;
     InputAction completeRoomAction;
@@ -31,6 +32,7 @@ public class InputManager : MonoBehaviour
         dashAction = playerInput.actions["Dash"];  
         moveAction = playerInput.actions["Move"];  
         aimAction = playerInput.actions["Aim"];  
+        mouseAimAction = playerInput.actions["MouseAim"];  
         lightAttackAction = playerInput.actions["LightAttack"];
         heavyAttackAction = playerInput.actions["HeavyAttack"];
         completeRoomAction = playerInput.actions["CompleteRoom"];
@@ -63,6 +65,11 @@ public class InputManager : MonoBehaviour
     public Vector2 Aim()
     {
         return aimAction.ReadValue<Vector2>();
+    }
+
+    public Vector2 MouseAim()
+    {
+        return mouseAimAction.ReadValue<Vector2>();
     }
 
     public bool CompleteRoom()

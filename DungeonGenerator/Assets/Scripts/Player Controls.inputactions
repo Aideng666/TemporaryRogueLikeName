@@ -24,6 +24,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "MouseAim",
+                    "type": "Value",
+                    "id": "98821cca-75a4-4e97-9434-a0f8c9d2299e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Dash",
                     "type": "Button",
                     "id": "e7ad41a0-8171-498d-8143-284ae3c593d1",
@@ -111,7 +120,7 @@
                     "id": "9be5cb60-f8b8-4a98-9553-fb875529c594",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "groups": "",
                     "action": "Move",
                     "isComposite": false,
@@ -375,7 +384,7 @@
                     "id": "301e144f-575a-4789-84ef-d95172b28cbf",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "groups": "",
                     "action": "Aim",
                     "isComposite": false,
@@ -383,12 +392,12 @@
                 },
                 {
                     "name": "",
-                    "id": "6894d1f9-32a6-4d29-b7f3-136d8429709b",
-                    "path": "<Mouse>/delta",
+                    "id": "f474f9f4-42b4-44e9-b61e-29bae1929bdc",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Aim",
+                    "action": "MouseAim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
