@@ -35,6 +35,7 @@ public class Room : MonoBehaviour
 
     [Header("Item Room Variables")]
     [SerializeField] protected GameObject skillPedestalPrefab;
+    [SerializeField] protected GameObject itemPickupPrefab;
 
     protected List<GameObject> currentEnemiesInRoom = new List<GameObject>();
     protected List<GameObject> currentSkillPedestalsInRoom = new List<GameObject>();
@@ -191,6 +192,8 @@ public class Room : MonoBehaviour
 
                 minimapGround.GetComponent<MeshRenderer>().material = shopRoomMaterial;
 
+                SpawnItem();
+
                 break;
 
             case RoomTypes.Item:
@@ -201,7 +204,7 @@ public class Room : MonoBehaviour
 
                 minimapGround.GetComponent<MeshRenderer>().material = itemRoomMaterial;
 
-                SpawnItemPedestals();
+                SpawnSkillPedestals();
 
                 break;
 
@@ -236,7 +239,7 @@ public class Room : MonoBehaviour
         }
     }
 
-    protected void SpawnItemPedestals()
+    protected void SpawnSkillPedestals()
     {
         var pedestal = Instantiate(skillPedestalPrefab, transform.position + new Vector3(-25, skillPedestalPrefab.transform.position.y, 0), Quaternion.identity);
 
@@ -248,6 +251,11 @@ public class Room : MonoBehaviour
 
         currentSkillPedestalsInRoom[0].GetComponent<SkillPedestal>().SetPartner(currentSkillPedestalsInRoom[1].GetComponent<SkillPedestal>());
         currentSkillPedestalsInRoom[1].GetComponent<SkillPedestal>().SetPartner(currentSkillPedestalsInRoom[0].GetComponent<SkillPedestal>());
+    }
+
+    protected void SpawnItem()
+    {
+        var item = Instantiate(itemPickupPrefab, transform.position, Quaternion.identity);
     }
 
     protected void SpawnBoss()

@@ -397,6 +397,7 @@ MonoBehaviour:
   possibleBosses:
   - {fileID: 5020632694857087463, guid: 95403e6a218f4814ca40b043d97a2097, type: 3}
   skillPedestalPrefab: {fileID: 3623551006791453587, guid: e9afb8760d3b7e84cbfe51904a85684a, type: 3}
+  itemPickupPrefab: {fileID: 7878968318009412985, guid: 8cab6aa397484084c9b058e626130391, type: 3}
 --- !u!1 &7309127041805056762
 GameObject:
   m_ObjectHideFlags: 0

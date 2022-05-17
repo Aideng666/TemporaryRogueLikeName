@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     PlayerAttackStates attackState = PlayerAttackStates.Idle;
     PlayerAttackStates previousAttackState = PlayerAttackStates.Idle;
     Skill[] equippedSkills = new Skill[4];
+    List<Item> itemList = new List<Item>();
 
     //health
     [SerializeField] int maxhealth = 6;
@@ -84,6 +85,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (currentHealth > maxhealth)
+        {
+            currentHealth = maxhealth;
+        }
+
         for (int i = 0; i < skillOrbs.Length; i++)
         {
             if (equippedSkills[i] == null || !equippedSkills[i].GetCooldownComplete())
@@ -437,6 +443,16 @@ public class PlayerController : MonoBehaviour
         //Write the code to swap between skills here (for when the player already has the max skills and wants a new one)
     }
 
+    public void AddItem(Item item)
+    {
+        itemList.Add(item);
+
+        if (item.GetItemType() == ItemTypes.Stat)
+        {
+            item.ItemEffect();
+        }
+    }
+
     IEnumerator ActivateSecondSpinAttack()
     {
         yield return new WaitForSeconds(0.2f);
@@ -528,6 +544,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void Heal(int amount)
+    {
+        if (amount > 0)
+        {
+            currentHealth += amount;
+        }
+    }
+
     IEnumerator ActivateIFrames()
     {
         iFramesActive = true;
@@ -551,6 +575,11 @@ public class PlayerController : MonoBehaviour
         return maxhealth;
     }
 
+    public void ModifyMaxHealth(int value)
+    {
+        maxhealth += value;
+    }
+
     public bool GetIFramesActive()
     {
         return iFramesActive;
@@ -572,6 +601,11 @@ public class PlayerController : MonoBehaviour
         if (hit.gameObject.TryGetComponent<SkillPedestal>(out var pedestal))
         {
             pedestal.GiveSkill();
+        }
+
+        if (hit.gameObject.TryGetComponent<ItemPickup>(out var pickup))
+        {
+            pickup.GiveItem();
         }
     }
 }
