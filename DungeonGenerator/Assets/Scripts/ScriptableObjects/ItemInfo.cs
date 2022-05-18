@@ -9,6 +9,7 @@ public class ItemInfo : ScriptableObject
     public GameObject itemModel;
     public int itemNum;
 
+    [HideInInspector]
     public GameObject item;
 
     private void Awake()

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemPool : MonoBehaviour
 {
     List<GameObject> availableItems = new List<GameObject>();
+    List<GameObject> availableSkills = new List<GameObject>();
 
     public static ItemPool Instance { get; private set; }
 
@@ -17,6 +18,14 @@ public class ItemPool : MonoBehaviour
     public GameObject GetItemFromPool(int itemIndex)
     {
         var instance = availableItems[itemIndex];
+
+        instance.SetActive(true);
+        return instance;
+    }
+
+    public GameObject GetSkillFromPool(int itemIndex)
+    {
+        var instance = availableSkills[itemIndex];
 
         instance.SetActive(true);
         return instance;
@@ -60,11 +69,27 @@ public class ItemPool : MonoBehaviour
 
         //    AddItemToPool(itemToAdd);
         //}
+
+        var skillTypes = System.AppDomain.CurrentDomain.GetAllDerivedTypes(typeof(Skill));
+
+        for (int i = 0; i < skillTypes.Length; i++)
+        {
+            GameObject skillToAdd = new GameObject("Skill", new System.Type[] { skillTypes[i] });
+            skillToAdd.transform.SetParent(transform);
+
+            AddSkillToPool(skillToAdd);
+        }
     }
 
     public void AddItemToPool(GameObject instance)
     {
         instance.SetActive(false);
         availableItems.Add(instance);
+    }
+
+    public void AddSkillToPool(GameObject instance)
+    {
+        instance.SetActive(false);
+        availableSkills.Add(instance);
     }
 }

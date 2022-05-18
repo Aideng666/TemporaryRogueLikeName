@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    //Change these to the scriptable object
-    //[SerializeField] protected float damage = 5;
-    //[SerializeField] protected float cooldown = 1;
-    ////////////////////////////////////////
-
-    [SerializeField] protected SkillInfo skillInfo;
 
     protected float timeToNextSkillUse = 0;
 
     protected PlayerController player;
 
     protected bool cooldownComplete = true;
+
+    protected GameObject projectile;
+    protected SkillInfo skillInfo;
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -62,5 +59,10 @@ public class Skill : MonoBehaviour
     public bool GetCooldownComplete()
     {
         return cooldownComplete;
+    }
+
+    public void SetSkillInfo(SkillInfo info)
+    {
+        skillInfo = info;
     }
 }

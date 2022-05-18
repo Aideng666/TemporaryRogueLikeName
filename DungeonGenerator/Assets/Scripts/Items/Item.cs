@@ -5,9 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Item : MonoBehaviour
 {
-    [SerializeField] protected ItemInfo itemInfo;
-    [SerializeField] protected ItemTypes type;
-
+    protected ItemTypes type;
     protected PlayerController player;
 
 

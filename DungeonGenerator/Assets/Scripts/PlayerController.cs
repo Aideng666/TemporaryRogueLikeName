@@ -424,17 +424,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void EquipSkill(Skill newSkill)
+    public void EquipSkill(SkillInfo newSkill)
     {
         for (int i = 0; i < equippedSkills.Length; i++)
         {
             if (equippedSkills[i] == null)
             {
-                equippedSkills[i] = newSkill;
+                equippedSkills[i] = newSkill.skill.GetComponent<Skill>();
 
                 skillOrbs[i].GetComponent<MeshRenderer>().enabled = true;
 
-                skillOrbs[i].GetComponent<MeshRenderer>().material.color = equippedSkills[i].GetSkillInfo().orbColor;
+                skillOrbs[i].GetComponent<MeshRenderer>().material.color = newSkill.orbColor;
 
                 return;
             }

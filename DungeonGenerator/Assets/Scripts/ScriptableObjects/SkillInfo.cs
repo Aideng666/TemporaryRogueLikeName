@@ -10,9 +10,18 @@ public class SkillInfo : ScriptableObject
     public float cooldown;
 
     public GameObject pedestalModel;
-    public Material orbMaterial;
+    public int skillNum;
     public Color orbColor;
     public GameObject skillPrefab;
 
+    [HideInInspector]
+    public GameObject skill;
+
+    public void SetSkill()
+    {
+        skill = ItemPool.Instance.GetSkillFromPool(skillNum);
+
+        skill.GetComponent<Skill>().SetSkillInfo(this);
+    }
     //Add stuff for UI icons as well
 }

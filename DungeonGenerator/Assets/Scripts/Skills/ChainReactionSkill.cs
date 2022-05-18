@@ -7,7 +7,7 @@ public class ChainReactionSkill : Skill
     //[SerializeField] GameObject chainShotPrefab;
     //[SerializeField] int defaultTotalRicochets = 3;
 
-    [SerializeField] GameObject projectile;
+    //[SerializeField] GameObject projectile;
 
     int totalRicochets = 3;
 
@@ -20,9 +20,9 @@ public class ChainReactionSkill : Skill
     {
         base.Start();
 
-        projectile.SetActive(false);
-
         //totalRicochets = defaultTotalRicochets;
+        projectile = Instantiate(skillInfo.skillPrefab, player.transform.position, Quaternion.identity);
+        projectile.SetActive(false);
     }
 
     protected override void Update()
@@ -32,7 +32,7 @@ public class ChainReactionSkill : Skill
 
     public override void UseSkill()
     {
-        //chainShot = Instantiate(projectile, player.transform.position, Quaternion.identity);
+
         if (RoomManager.Instance.GetCurrentRoom().GetEnemiesInRoom().Count < 1)
         {
             timeToNextSkillUse = Time.time + skillInfo.cooldown;

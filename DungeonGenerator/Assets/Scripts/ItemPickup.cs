@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    [SerializeField] protected List<ItemInfo> possibleItems = new List<ItemInfo>();
+    //[SerializeField] protected List<ItemInfo> possibleItems = new List<ItemInfo>();
+
+    ItemInfo[] possibleItems;
 
     ItemInfo selectedItem;
 
     private void Start()
     {
+        possibleItems = TypeHandler.GetAllInstances<ItemInfo>();
+
         ChooseRandomItem();
     }
 
     void ChooseRandomItem()
     {
-        int randomIndex = Random.Range(0, possibleItems.Count);
+        int randomIndex = Random.Range(0, possibleItems.Length);
 
         selectedItem = possibleItems[randomIndex];
 

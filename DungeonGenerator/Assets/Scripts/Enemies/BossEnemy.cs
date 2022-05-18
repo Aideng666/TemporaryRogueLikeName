@@ -105,7 +105,7 @@ public class BossEnemy : Enemy
         Vector3 endPos = transform.position + (Vector3.up * 10);
 
         float timeElasped = 0;
-        float totalTime = 0.5f;
+        float totalTime = 0.25f;
 
         while (timeElasped < totalTime)
         {

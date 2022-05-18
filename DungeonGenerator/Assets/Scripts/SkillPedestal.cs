@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class SkillPedestal : MonoBehaviour
 {
-    [SerializeField] protected List<SkillInfo> possibleSkills = new List<SkillInfo>();
+    //[SerializeField] protected List<SkillInfo> possibleSkills = new List<SkillInfo>();
+
+    SkillInfo[] possibleSkills;
 
     SkillInfo selectedSkill;
-    Skill heldSkill;
 
     SkillPedestal partnerPedestal;
 
@@ -15,6 +16,8 @@ public class SkillPedestal : MonoBehaviour
 
     private void Start()
     {
+        possibleSkills = TypeHandler.GetAllInstances<SkillInfo>();
+
         ChooseRandomSkill();
     }
 
@@ -22,13 +25,11 @@ public class SkillPedestal : MonoBehaviour
     {
         //Go through list of skills (scriptable objects) and choose a random one (can also add rarity?)
 
-        int randomIndex = Random.Range(0, possibleSkills.Count);
+        int randomIndex = Random.Range(0, possibleSkills.Length);
 
         selectedSkill = possibleSkills[randomIndex];
 
-        var skill = Instantiate(selectedSkill.skillPrefab, Vector3.zero, Quaternion.identity);
-
-        heldSkill = skill.GetComponent<Skill>();
+        selectedSkill.SetSkill();
 
         Instantiate(selectedSkill.pedestalModel, new Vector3(transform.position.x, transform.position.y + 2, transform.position.z), selectedSkill.pedestalModel.transform.rotation, transform);
     }
@@ -37,9 +38,11 @@ public class SkillPedestal : MonoBehaviour
     {
         if (isActive)
         {
-            PlayerController.Instance.EquipSkill(heldSkill);
+            PlayerController.Instance.EquipSkill(selectedSkill);
 
-            Destroy(gameObject.transform.GetChild(0).gameObject);
+            //Destroy(gameObject.transform.GetChild(0).gameObject);
+
+            Destroy(gameObject);
 
             isActive = false;
 
