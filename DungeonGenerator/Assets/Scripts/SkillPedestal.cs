@@ -16,7 +16,7 @@ public class SkillPedestal : MonoBehaviour
 
     private void Start()
     {
-        possibleSkills = TypeHandler.GetAllInstances<SkillInfo>();
+        possibleSkills = TypeHandler.GetAllInstances<SkillInfo>("Skills");
 
         ChooseRandomSkill();
     }

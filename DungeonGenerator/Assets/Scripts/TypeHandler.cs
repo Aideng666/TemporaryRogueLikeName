@@ -27,18 +27,20 @@ public static class TypeHandler
         return GetAllDerivedTypes(aAppDomain, typeof(T));
     }
 
-    public static T[] GetAllInstances<T>() where T : ScriptableObject
+    public static T[] GetAllInstances<T>(string folderName) where T : ScriptableObject
     {
-        string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+        //string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
 
-        T[] instanceList = new T[guids.Length];
+        T[] instanceList = Resources.LoadAll<T>(folderName);
 
-        for (int i = 0; i < guids.Length; i++)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+        //T[] instanceList = new T[guids.Length];
 
-            instanceList[i] = AssetDatabase.LoadAssetAtPath<T>(path);
-        }
+        //for (int i = 0; i < guids.Length; i++)
+        //{
+        //    string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+
+        //    instanceList[i] = AssetDatabase.LoadAssetAtPath<T>(path);
+        //}
 
         return instanceList;
     }

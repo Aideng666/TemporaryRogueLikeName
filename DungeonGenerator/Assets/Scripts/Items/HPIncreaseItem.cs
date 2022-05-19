@@ -16,7 +16,5 @@ public class HPIncreaseItem : StatItem
 
         player.ModifyMaxHealth(2);
         player.Heal(2);
-
-        print("Effect Applied");
     }
 }

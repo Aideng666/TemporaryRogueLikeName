@@ -12,7 +12,7 @@ public class ItemPickup : MonoBehaviour
 
     private void Start()
     {
-        possibleItems = TypeHandler.GetAllInstances<ItemInfo>();
+        possibleItems = TypeHandler.GetAllInstances<ItemInfo>("Items");
 
         ChooseRandomItem();
     }
